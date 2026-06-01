@@ -4,7 +4,7 @@ const USUARIO = process.env.SITE_USUARIO ?? "admin"
 const SENHA   = process.env.SITE_SENHA   ?? "rr2026"
 
 /* Rotas que não precisam de autenticação */
-const PUBLIC_PATHS = ["/api/"]
+const PUBLIC_PATHS = ["/api/", "/_login"]
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
