@@ -94,5 +94,5 @@ async function login(data: FormData) {
     redirect(from)
   }
 
-  redirect(`/_login?from=${encodeURIComponent(from)}&erro=1`)
+  redirect(`/login?from=${encodeURIComponent(from)}&erro=1`)
 }

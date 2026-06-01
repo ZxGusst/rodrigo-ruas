@@ -4,7 +4,7 @@ const USUARIO = process.env.SITE_USUARIO ?? "admin"
 const SENHA   = process.env.SITE_SENHA   ?? "rr2026"
 
 /* Rotas que não precisam de autenticação */
-const PUBLIC_PATHS = ["/api/", "/_login"]
+const PUBLIC_PATHS = ["/api/", "/login"]
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
@@ -21,12 +21,12 @@ export function middleware(req: NextRequest) {
   }
 
   /* Verifica se está enviando o formulário de login */
-  if (req.method === "POST" && pathname === "/_login") {
+  if (req.method === "POST" && pathname === "/login") {
     return NextResponse.next()
   }
 
   /* Redireciona para o login */
-  const loginUrl = new URL("/_login", req.url)
+  const loginUrl = new URL("/login", req.url)
   loginUrl.searchParams.set("from", pathname)
   return NextResponse.redirect(loginUrl)
 }
