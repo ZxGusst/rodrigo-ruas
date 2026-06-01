@@ -1,0 +1,304 @@
+export const revalidate = 60
+
+import { ImageOverlay } from "@/components/ImageOverlay"
+import { notFound } from "next/navigation"
+import type { Metadata } from "next"
+import { client } from "@/sanity/lib/client"
+import { urlFor } from "@/sanity/lib/image"
+import { PACOTE_BY_SLUG_QUERY, PACOTES_SLUGS_QUERY } from "@/sanity/lib/queries"
+import { PortableText, type PortableTextComponents } from "@portabletext/react"
+import {
+  NavBar, ScrollReveal, LineReveal,
+  RevealImage, BtnPrimary, MagneticCursor, ImagePlaceholder,
+  TransitionLink,
+} from "@/components/gsap"
+import { Clock, Airplane, Users, MapPin, Star, Check, X } from "@phosphor-icons/react/dist/ssr"
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface Dia { numero: number; titulo: string; texto?: any[]; imagem?: any }
+interface PacoteData {
+  _id: string; titulo: string; slug: string; badge?: string; heroImage?: any
+  periodo?: string; dias?: number; partida?: string; vagas?: number
+  intro?: any[]; pullQuote?: string; itinerario?: Dia[]
+  galeria?: any[]; incluso?: string[]; naoIncluso?: string[]; metaDescricao?: string
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  try {
+    const { slug } = await params
+    const p: PacoteData | null = await client.fetch(PACOTE_BY_SLUG_QUERY, { slug })
+    if (!p) return {}
+    return { title: `${p.titulo} — RR Viagens`, description: p.metaDescricao ?? `Pacote ${p.titulo} com Rodrigo Ruas.` }
+  } catch { return {} }
+}
+
+export async function generateStaticParams() {
+  if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === "placeholder") return []
+  try {
+    const list: { slug: string }[] = await client.fetch(PACOTES_SLUGS_QUERY)
+    return list.map(p => ({ slug: p.slug }))
+  } catch { return [] }
+}
+
+const ptComponents: PortableTextComponents = {
+  block: {
+    normal:     ({ children }) => <p className="t-body-lg text-foreground-muted mb-5 leading-relaxed">{children}</p>,
+    h2:         ({ children }) => <h2 className="t-h2 text-foreground mt-12 mb-4">{children}</h2>,
+    h3:         ({ children }) => <h3 className="t-h3 text-foreground mt-8 mb-3">{children}</h3>,
+    blockquote: ({ children }) => <blockquote className="border-l-2 border-foreground pl-6 my-8 italic t-body-lg text-foreground-muted">{children}</blockquote>,
+  },
+}
+
+export default async function PacotePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const pacote: PacoteData | null = await client.fetch(PACOTE_BY_SLUG_QUERY, { slug })
+  if (!pacote) notFound()
+
+  const WA = "https://wa.me/5511966401489"
+
+  return (
+    <main data-page-content className="bg-background text-foreground overflow-x-clip">
+      <MagneticCursor />
+      <NavBar />
+
+      {/* ══ HERO ═══════════════════════════════════════════ */}
+      <section className="relative min-h-screen flex items-end overflow-hidden">
+        <div className="absolute inset-0">
+          {pacote.heroImage
+            ? <img src={urlFor(pacote.heroImage).width(1920).height(1080).fit("crop").url()} alt={pacote.titulo} className="w-full h-full object-cover" />
+            : <ImagePlaceholder className="w-full h-full" iconSize={96} />
+          }
+        </div>
+        <ImageOverlay blur={14} darkFrom={0.88} darkMid={0.25} blurStop="35%" blurFade="65%" />
+        <div className="relative z-10 wrap pb-16 w-full">
+          {pacote.badge && (
+            <span className="inline-flex items-center gap-1.5 bg-warning/90 text-white text-[13px] font-bold uppercase tracking-wide px-4 py-2 rounded-full mb-6">
+              <Clock size={13} weight="bold" />
+              {pacote.badge === "vagas" ? "Últimas Vagas" : "Esgotado"}
+            </span>
+          )}
+          <LineReveal as="h1" className="t-hero text-white leading-none mb-6">
+            {pacote.titulo.toUpperCase()}
+          </LineReveal>
+          <div className="flex flex-wrap gap-6 text-white/80 text-[16px]">
+            {pacote.periodo  && <span className="flex items-center gap-2"><Clock    size={16} /> {pacote.periodo}</span>}
+            {pacote.dias     && <span className="flex items-center gap-2"><Airplane size={16} /> {pacote.dias} dias</span>}
+            {pacote.partida  && <span className="flex items-center gap-2"><MapPin   size={16} /> Partida: {pacote.partida}</span>}
+            {pacote.vagas    && <span className="flex items-center gap-2"><Users    size={16} /> {pacote.vagas} vagas</span>}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ BARRA INFO ═════════════════════════════════════ */}
+      <div className="border-y border-border bg-background-elevated">
+        <div className="wrap py-6">
+          <div className="flex flex-wrap gap-8 items-center justify-between">
+            <div className="flex flex-wrap gap-10">
+              {[
+                { label: "Duração",  value: pacote.dias    ? `${pacote.dias} dias` : "—" },
+                { label: "Partida",  value: pacote.partida ?? "—" },
+                { label: "Período",  value: pacote.periodo ?? "—" },
+                { label: "Vagas",    value: pacote.vagas   ? `${pacote.vagas} por grupo` : "—" },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="t-label mb-1">{label}</p>
+                  <p className="text-[18px] font-semibold text-foreground">{value}</p>
+                </div>
+              ))}
+            </div>
+            <BtnPrimary href={WA} target="_blank" rel="noreferrer">Quero este pacote</BtnPrimary>
+          </div>
+        </div>
+      </div>
+
+      {/* ══ INTRO EDITORIAL ════════════════════════════════ */}
+      {pacote.intro && (
+        <section className="py-20">
+          <div className="wrap" style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+            <ScrollReveal>
+              <p className="t-label mb-8 flex items-center gap-2">
+                <Star size={14} weight="fill" /> Curadoria de Rodrigo Ruas
+              </p>
+              <PortableText value={pacote.intro} components={ptComponents} />
+            </ScrollReveal>
+          </div>
+        </section>
+      )}
+
+      {/* ══ IMAGEM FULL WIDTH ══════════════════════════════ */}
+      {pacote.galeria && pacote.galeria.length > 0 && (
+        <RevealImage direction="up" className="overflow-hidden" data-cursor="expand">
+          <div className="aspect-[21/9] group overflow-hidden">
+            <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.03]">
+              <img src={urlFor(pacote.galeria[0]).width(1920).fit("crop").url()}
+                   alt={pacote.titulo} className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </RevealImage>
+      )}
+
+      {/* ══ PULL QUOTE ═════════════════════════════════════ */}
+      {pacote.pullQuote && (
+        <section className="border-t border-b border-border py-20 bg-background-section">
+          <div className="wrap max-w-3xl mx-auto text-center">
+            <ScrollReveal>
+              <p className="font-light italic text-foreground leading-relaxed"
+                 style={{ fontSize: "clamp(22px,3vw,38px)" }}>
+                "{pacote.pullQuote}"
+              </p>
+              <p className="t-label text-foreground-subtle mt-6">— Rodrigo Ruas</p>
+            </ScrollReveal>
+          </div>
+        </section>
+      )}
+
+      {/* ══ ITINERÁRIO ═════════════════════════════════════ */}
+      {pacote.itinerario && pacote.itinerario.length > 0 && (
+        <section className="py-20 border-t border-border">
+          <div className="wrap">
+            <ScrollReveal><p className="t-label mb-2">O roteiro</p></ScrollReveal>
+            <LineReveal as="h2" className="t-h2 text-foreground mb-16">Dia a dia</LineReveal>
+            <div className="flex flex-col gap-20">
+              {pacote.itinerario.map((dia, i) => (
+                <div key={dia.numero} className={`grid grid-cols-1 ${dia.imagem ? "lg:grid-cols-2" : ""} gap-12 items-start`}>
+                  <ScrollReveal className={i % 2 === 1 && dia.imagem ? "lg:order-2" : ""}>
+                    <p className="t-label mb-3">Dia {dia.numero}</p>
+                    <h3 className="t-h3 text-foreground mb-5">{dia.titulo}</h3>
+                    {dia.texto && <PortableText value={dia.texto} components={ptComponents} />}
+                  </ScrollReveal>
+                  {dia.imagem ? (
+                    <RevealImage direction={i % 2 === 0 ? "right" : "left"}
+                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : ""}`}
+                                 data-cursor="expand">
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                          <img src={urlFor(dia.imagem).width(900).fit("crop").url()} alt={dia.titulo}
+                               className="w-full h-full object-cover" loading="lazy" />
+                        </div>
+                      </div>
+                    </RevealImage>
+                  ) : (
+                    <RevealImage direction={i % 2 === 0 ? "right" : "left"}
+                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : ""}`}
+                                 data-cursor="expand">
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                          <ImagePlaceholder className="w-full h-full" iconSize={40} />
+                        </div>
+                      </div>
+                    </RevealImage>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══ GALERIA ════════════════════════════════════════ */}
+      {pacote.galeria && pacote.galeria.length > 1 && (
+        <section className="py-20 border-t border-border bg-background-section">
+          <div className="wrap">
+            <ScrollReveal>
+              <p className="t-label mb-2">Galeria</p>
+              <h2 className="t-h2 text-foreground mb-12">Imagens do destino</h2>
+            </ScrollReveal>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {pacote.galeria.slice(1).map((img, i) => (
+                <RevealImage key={i} direction="up" delay={i * 0.06} className="overflow-hidden group" data-cursor="expand">
+                  <div className="aspect-square transition-transform duration-700 group-hover:scale-[1.05]">
+                    <img src={urlFor(img).width(600).height(600).fit("crop").url()} alt={`Foto ${i + 2}`}
+                         className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                </RevealImage>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══ INCLUSO / NÃO INCLUSO — dois painéis ══════════ */}
+      {(pacote.incluso?.length || pacote.naoIncluso?.length) ? (
+        <section className="border-t-2 border-foreground">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+
+            {/* Painel INCLUSO — navy */}
+            <div className="bg-foreground text-primary-foreground p-[clamp(32px,6vw,72px)]">
+              <ScrollReveal>
+                <p className="t-label text-primary-foreground/40 mb-3">O que está incluso</p>
+                <h3 className="font-bold text-primary-foreground mb-10"
+                    style={{ fontSize: "clamp(32px,4vw,56px)", letterSpacing: "-0.02em" }}>
+                  Incluso no pacote
+                </h3>
+              </ScrollReveal>
+              <div className="flex flex-col divide-y divide-primary-foreground/10">
+                {(pacote.incluso ?? []).map((item, i) => (
+                  <ScrollReveal key={i} delay={i * 0.04} className="flex items-center gap-5 py-5">
+                    <span className="shrink-0 w-8 h-8 rounded-full bg-primary-foreground/15 flex items-center justify-center">
+                      <Check size={18} weight="bold" className="text-primary-foreground" />
+                    </span>
+                    <p className="text-[17px] font-medium text-primary-foreground leading-snug">{item}</p>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+
+            {/* Painel NÃO INCLUSO — claro */}
+            <div className="bg-background-section p-[clamp(32px,6vw,72px)] border-t-2 lg:border-t-0 lg:border-l-2 border-foreground">
+              <ScrollReveal>
+                <p className="t-label text-foreground-subtle mb-3">O que não está incluso</p>
+                <h3 className="font-bold text-foreground mb-10"
+                    style={{ fontSize: "clamp(32px,4vw,56px)", letterSpacing: "-0.02em" }}>
+                  Não incluso
+                </h3>
+              </ScrollReveal>
+              <div className="flex flex-col divide-y divide-border">
+                {(pacote.naoIncluso ?? []).map((item, i) => (
+                  <ScrollReveal key={i} delay={i * 0.04} className="flex items-center gap-5 py-5">
+                    <span className="shrink-0 w-8 h-8 rounded-full bg-foreground/[0.08] flex items-center justify-center border border-border">
+                      <X size={16} weight="bold" className="text-foreground-muted" />
+                    </span>
+                    <p className="text-[17px] text-foreground-muted leading-snug">{item}</p>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </section>
+      ) : null}
+
+      {/* ══ CTA FINAL ══════════════════════════════════════ */}
+      <section className="bg-foreground text-primary-foreground py-24">
+        <div className="wrap text-center">
+          <ScrollReveal><p className="t-label text-primary-foreground/50 mb-4">Pronto para ir?</p></ScrollReveal>
+          <LineReveal as="h2" className="t-h1 text-primary-foreground mb-6 max-w-2xl mx-auto">
+            {`Garanta sua vaga em ${pacote.titulo}${pacote.periodo ? ` — ${pacote.periodo}` : ""}.`}
+          </LineReveal>
+          <ScrollReveal delay={0.15}>
+            <p className="t-body-lg text-primary-foreground/60 mb-10 max-w-md mx-auto">
+              {pacote.vagas ? `Grupo de ${pacote.vagas} pessoas.` : ""} Atendimento direto com Rodrigo. Vagas limitadas.
+            </p>
+            <BtnPrimary href={WA} target="_blank" rel="noreferrer"
+                        className="!bg-primary-foreground !text-primary">
+              Falar no WhatsApp agora
+            </BtnPrimary>
+            <p className="t-small mt-4 flex items-center justify-center gap-2 text-primary-foreground/40">
+              <Clock size={14} /> Resposta em até 1 hora
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ══ FOOTER SIMPLES ═════════════════════════════════ */}
+      <footer className="py-8 border-t border-border">
+        <div className="wrap flex justify-between items-center">
+          <p className="font-bold tracking-tight text-foreground">RR VIAGENS</p>
+          <TransitionLink href="/" className="t-small text-foreground-subtle hover:text-foreground transition-colors">
+            ← Voltar para a home
+          </TransitionLink>
+        </div>
+      </footer>
+    </main>
+  )
+}

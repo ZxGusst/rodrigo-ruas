@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ─── BACKGROUNDS ──────────────────────────────────────── */
+    --background:          50 25% 98%;    /* #FAFAF8 — off-white quente */
+    --background-elevated: 43 23% 94%;    /* #F3F1EC — surfaces elevadas */
+    --background-section:  40 17% 91%;    /* #EDEAE4 — seções alternadas */
+
+    /* ─── FOREGROUND (navy blue) ───────────────────────────── */
+    --foreground:          209 57% 12%;   /* #0D1F30 — texto primário */
+    --foreground-muted:    204 28% 33%;   /* #3D5A6E — texto secundário */
+    --foreground-subtle:   200 20% 53%;   /* #7090A0 — labels, meta */
+
+    /* ─── SHADCN SEMÂNTICOS ────────────────────────────────── */
+    --card:                50 25% 98%;
+    --card-foreground:     209 57% 12%;
+
+    --popover:             50 25% 98%;
+    --popover-foreground:  209 57% 12%;
+
+    --primary:             209 57% 12%;   /* navy como primary */
+    --primary-foreground:  50 25% 98%;    /* texto sobre primary */
+
+    --secondary:           43 23% 94%;
+    --secondary-foreground: 209 57% 12%;
+
+    --muted:               43 23% 94%;
+    --muted-foreground:    200 20% 53%;
+
+    --accent:              40 17% 91%;
+    --accent-foreground:   209 57% 12%;
+
+    --destructive:         0 59% 45%;     /* #B83030 */
+    --destructive-foreground: 50 25% 98%;
+
+    /* ─── EXTRAS SEMÂNTICOS ────────────────────────────────── */
+    --warning:             30 67% 38%;    /* #A06020 */
+    --warning-foreground:  50 25% 98%;
+
+    --success:             145 68% 32%;   /* #1A8A48 */
+    --success-foreground:  50 25% 98%;
+
+    /* ─── BORDAS / INPUT / RING ────────────────────────────── */
+    --border:              36 16% 85%;    /* #E0DBD4 */
+    --border-strong:       36 18% 78%;    /* #C8C2B8 */
+    --input:               36 16% 85%;
+    --ring:                209 57% 12%;
+
+    /* ─── BORDER RADIUS ────────────────────────────────────── */
+    --radius: 0.5rem;                     /* 8px — base do Shadcn */
+
+    /* ─── SURFACE DARK (seções invertidas) ────────────────── */
+    --surface-dark:        209 57% 12%;   /* #0D1F30 */
+    --surface-dark-text:   50 25% 98%;    /* #FAFAF8 */
+
+    /* ─── TIPOGRAFIA ───────────────────────────────────────── */
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* ─── ESCALA DE CINZAS (custom, fora do padrão Shadcn) ──── */
+  :root {
+    --gray-50:  50 25% 98%;
+    --gray-100: 43 23% 94%;
+    --gray-200: 40 16% 90%;
+    --gray-300: 37 13% 80%;
+    --gray-400: 30  8% 63%;
+    --gray-500: 25  6% 44%;
+    --gray-600: 22 10% 28%;
+    --gray-700: 22  9% 18%;
+    --gray-800: 20 12% 10%;
+    --gray-900: 20 15%  6%;
+  }
+
+  /* ─── RESET BASE ───────────────────────────────────────── */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ─── HIERARQUIA TIPOGRÁFICA ───────────────────────────── */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    color: hsl(var(--foreground));
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* Hero — seções de impacto */
+  .t-hero {
+    font-size: clamp(64px, 10vw, 140px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  /* H1 */
+  .t-h1 {
+    font-size: clamp(40px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  /* H2 */
+  .t-h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  /* H3 */
+  .t-h3 {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  /* H4 */
+  .t-h4 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* Body large */
+  .t-body-lg {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: hsl(var(--foreground-muted));
+  }
+
+  /* Body */
+  .t-body {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.75;
+    color: hsl(var(--foreground-muted));
+  }
+
+  /* Small */
+  .t-small {
+    font-size: 13px;
+    color: hsl(var(--foreground-subtle));
+    line-height: 1.6;
+  }
+
+  /* Label / Eyebrow */
+  .t-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground-subtle));
+  }
+}

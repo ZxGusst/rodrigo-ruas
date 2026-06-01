@@ -1,0 +1,243 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ─── TOKENS RR VIAGENS ──────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --background:          50 25% 98%;      /* #FAFAF8 off-white quente */
+  --background-elevated: 43 23% 94%;      /* #F3F1EC surfaces */
+  --background-section:  40 17% 91%;      /* #EDEAE4 seções alternadas */
+
+  /* Foreground navy */
+  --foreground:          209 57% 12%;     /* #0D1F30 texto principal */
+  --foreground-muted:    204 28% 33%;     /* #3D5A6E texto secundário */
+  --foreground-subtle:   200 20% 53%;     /* #7090A0 labels, meta */
+
+  /* Shadcn semânticos */
+  --card:                50 25% 98%;
+  --card-foreground:     209 57% 12%;
+  --popover:             50 25% 98%;
+  --popover-foreground:  209 57% 12%;
+  --primary:             209 57% 12%;     /* navy = primary/CTA */
+  --primary-foreground:  50 25% 98%;
+  --secondary:           43 23% 94%;
+  --secondary-foreground: 209 57% 12%;
+  --muted:               43 23% 94%;
+  --muted-foreground:    200 20% 53%;
+  --accent:              40 17% 91%;
+  --accent-foreground:   209 57% 12%;
+  --destructive:         0 59% 45%;       /* #B83030 */
+  --destructive-foreground: 50 25% 98%;
+  --warning:             30 67% 38%;      /* #A06020 */
+  --warning-foreground:  50 25% 98%;
+  --success:             145 68% 32%;     /* #1A8A48 */
+  --success-foreground:  50 25% 98%;
+
+  /* Border / input / ring */
+  --border:              36 16% 85%;      /* #E0DBD4 */
+  --border-strong:       36 18% 78%;      /* #C8C2B8 */
+  --input:               36 16% 85%;
+  --ring:                209 57% 12%;
+
+  /* Surface dark — seções invertidas */
+  --surface-dark:        209 57% 12%;
+  --surface-dark-text:   50 25% 98%;
+
+  /* Escala warm-gray */
+  --gray-50:  50 25% 98%;
+  --gray-100: 43 23% 94%;
+  --gray-200: 40 16% 90%;
+  --gray-300: 37 13% 80%;
+  --gray-400: 30  8% 63%;
+  --gray-500: 25  6% 44%;
+  --gray-600: 22 10% 28%;
+  --gray-700: 22  9% 18%;
+  --gray-800: 20 12% 10%;
+  --gray-900: 20 15%  6%;
+
+  /* Border radius base */
+  --radius: 0.5rem;
+}
+
+/* ─── MAPEAMENTO TAILWIND v4 (@theme inline) ─────────────── */
+@theme inline {
+  /* Cores */
+  --color-background:          hsl(var(--background));
+  --color-foreground:          hsl(var(--foreground));
+  --color-foreground-muted:    hsl(var(--foreground-muted));
+  --color-foreground-subtle:   hsl(var(--foreground-subtle));
+
+  --color-card:                hsl(var(--card));
+  --color-card-foreground:     hsl(var(--card-foreground));
+  --color-popover:             hsl(var(--popover));
+  --color-popover-foreground:  hsl(var(--popover-foreground));
+
+  --color-primary:             hsl(var(--primary));
+  --color-primary-foreground:  hsl(var(--primary-foreground));
+  --color-secondary:           hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:               hsl(var(--muted));
+  --color-muted-foreground:    hsl(var(--muted-foreground));
+  --color-accent:              hsl(var(--accent));
+  --color-accent-foreground:   hsl(var(--accent-foreground));
+
+  --color-destructive:         hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-warning:             hsl(var(--warning));
+  --color-warning-foreground:  hsl(var(--warning-foreground));
+  --color-success:             hsl(var(--success));
+  --color-success-foreground:  hsl(var(--success-foreground));
+
+  --color-border:              hsl(var(--border));
+  --color-border-strong:       hsl(var(--border-strong));
+  --color-input:               hsl(var(--input));
+  --color-ring:                hsl(var(--ring));
+
+  --color-surface-dark:        hsl(var(--surface-dark));
+  --color-surface-dark-text:   hsl(var(--surface-dark-text));
+
+  /* Escala warm-gray */
+  --color-gray-50:  hsl(var(--gray-50));
+  --color-gray-100: hsl(var(--gray-100));
+  --color-gray-200: hsl(var(--gray-200));
+  --color-gray-300: hsl(var(--gray-300));
+  --color-gray-400: hsl(var(--gray-400));
+  --color-gray-500: hsl(var(--gray-500));
+  --color-gray-600: hsl(var(--gray-600));
+  --color-gray-700: hsl(var(--gray-700));
+  --color-gray-800: hsl(var(--gray-800));
+  --color-gray-900: hsl(var(--gray-900));
+
+  /* Escala navy */
+  --color-navy-50:  #F0F6FA;
+  --color-navy-100: #D1E2EE;
+  --color-navy-200: #A8C4D8;
+  --color-navy-300: #7EA6BE;
+  --color-navy-400: #5588A4;
+  --color-navy-500: #3D6A82;
+  --color-navy-600: #2E5068;
+  --color-navy-700: #1E3347;
+  --color-navy-800: #152B3E;
+  --color-navy-900: #0D1F30;
+
+  /* Tipografia */
+  --font-sans: var(--font-dm-sans), 'DM Sans', -apple-system, sans-serif;
+
+  /* Font sizes com line-height */
+  --text-xs:   13px;
+  --text-sm:   15px;
+  --text-base: 18px;
+  --text-md:   20px;
+  --text-lg:   24px;
+  --text-xl:   28px;
+  --text-2xl:  36px;
+  --text-3xl:  48px;
+  --text-4xl:  64px;
+
+  /* Border radius */
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   var(--radius);
+  --radius-lg:   calc(var(--radius) * 2);
+  --radius-full: 9999px;
+
+  /* Sombras com tint navy */
+  --shadow-sm:  0 1px 3px  hsl(209 57% 12% / 0.08);
+  --shadow-md:  0 4px 12px hsl(209 57% 12% / 0.10);
+  --shadow-lg:  0 8px 24px hsl(209 57% 12% / 0.12);
+  --shadow-xl:  0 16px 48px hsl(209 57% 12% / 0.14);
+}
+
+/* ─── BASE ───────────────────────────────────────────────── */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+/* ─── UTILITÁRIOS TIPOGRÁFICOS ───────────────────────────── */
+/* ─── CONTAINER GLOBAL ───────────────────────────────────── */
+.wrap {
+  max-width: 1520px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left:  clamp(20px, 4vw, 64px);
+  padding-right: clamp(20px, 4vw, 64px);
+}
+
+@layer utilities {
+  /* ── Público 60+ — tudo maior, mais legível ── */
+  .t-hero {
+    font-size: clamp(56px, 9vw, 130px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .t-h1 {
+    font-size: clamp(38px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .t-h2 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .t-h3 {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .t-h4 {
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .t-body-lg {
+    font-size: clamp(18px, 1.5vw, 22px);
+    font-weight: 400;
+    line-height: 1.8;
+    color: hsl(var(--foreground-muted));
+  }
+
+  .t-body {
+    font-size: clamp(17px, 1.3vw, 20px);
+    font-weight: 400;
+    line-height: 1.8;
+    color: hsl(var(--foreground-muted));
+  }
+
+  .t-small {
+    font-size: 15px;
+    color: hsl(var(--foreground-subtle));
+    line-height: 1.6;
+  }
+
+  .t-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground-subtle));
+  }
+}
