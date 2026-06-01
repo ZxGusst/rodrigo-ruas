@@ -72,6 +72,16 @@ export const HOMEPAGE_CONTENT_QUERY = groq`
   }
 `
 
+/* ── Formulário de contato (singleton) ───────────────────── */
+export const FORMULARIO_QUERY = groq`
+  *[_type == "formulario" && _id == "singleton-formulario"][0] {
+    titulo, descricao, webhookUrl, redirectAoEnviar,
+    mensagemSucesso, textoBotao,
+    imagemDestaque,
+    campos[] { tipo, label, nome, placeholder, obrigatorio, opcoes },
+  }
+`
+
 /* ── Slugs para generateStaticParams ─────────────────────── */
 export const PACOTES_SLUGS_QUERY = groq`
   *[_type == "pacote"] { "slug": slug.current }

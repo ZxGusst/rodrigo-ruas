@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { TransitionLink } from "./TransitionLink"
+import { useForm } from "@/components/FormProvider"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,6 +17,7 @@ const links = [
 
 export function NavBar() {
   const navRef = useRef<HTMLElement>(null)
+  const { openForm } = useForm()
 
   useEffect(() => {
     gsap.fromTo(navRef.current,
@@ -98,20 +100,18 @@ export function NavBar() {
           ))}
         </ul>
 
-        {/* CTA */}
-        <a
-          href="https://wa.me/5511966401489"
-          target="_blank"
-          rel="noreferrer"
+        {/* CTA — abre o formulário */}
+        <button
+          onClick={() => openForm()}
           className="hidden md:inline-flex items-center gap-3
                      bg-primary text-primary-foreground
                      text-[16px] font-semibold
                      px-7 py-3.5 rounded-full
-                     hover:opacity-90 transition-opacity"
+                     hover:opacity-90 transition-opacity cursor-pointer"
         >
           Falar no WhatsApp
           <span className="w-[7px] h-[7px] rounded-full bg-primary-foreground shrink-0" />
-        </a>
+        </button>
       </nav>
     </>
   )

@@ -29,6 +29,16 @@ export default defineConfig({
                   .title("Homepage")
               ),
             S.divider(),
+            /* Formulário — singleton */
+            S.listItem()
+              .title("Formulário de Contato")
+              .child(
+                S.document()
+                  .schemaType("formulario")
+                  .documentId("singleton-formulario")
+                  .title("Formulário de Contato")
+              ),
+            S.divider(),
             /* Pacotes — lista normal */
             S.documentTypeListItem("pacote").title("Pacotes"),
           ]),
