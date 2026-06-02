@@ -34,7 +34,7 @@ export function RevealImage({
       right: "inset(0% 0% 0% 100%)",
     }
 
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       ref.current,
       { clipPath: from[direction] },
       {
@@ -50,7 +50,7 @@ export function RevealImage({
       }
     )
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => { tween.kill(); tween.scrollTrigger?.kill() }
   }, [delay, direction])
 
   return (

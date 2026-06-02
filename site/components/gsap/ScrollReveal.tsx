@@ -37,7 +37,7 @@ export function ScrollReveal({
       ? Array.from(ref.current.children)
       : ref.current
 
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       targets,
       from,
       {
@@ -56,7 +56,7 @@ export function ScrollReveal({
       }
     )
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => { tween.kill(); tween.scrollTrigger?.kill() }
   }, [delay, direction, stagger])
 
   return (
