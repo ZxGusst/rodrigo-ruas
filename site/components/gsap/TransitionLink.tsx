@@ -7,18 +7,20 @@ interface TransitionLinkProps {
   href: string
   children: ReactNode
   className?: string
+  onClick?: () => void
 }
 
 /**
  * Link que dispara o swipe-up (PageCurtain) antes de navegar.
  * Funciona com qualquer elemento filho.
  */
-export function TransitionLink({ href, children, className = "" }: TransitionLinkProps) {
+export function TransitionLink({ href, children, className = "", onClick }: TransitionLinkProps) {
   const router  = useRouter()
   const pending = useRef(false)
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
+    onClick?.()
     if (pending.current) return
     pending.current = true
 
