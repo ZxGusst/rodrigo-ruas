@@ -8,6 +8,7 @@ import { TransitionLink } from "./TransitionLink"
 import { useForm } from "@/components/FormProvider"
 import { useSound } from "@/components/SoundProvider"
 import { DestinosModal } from "@/components/DestinosModal"
+import { MobileMenu } from "./MobileMenu"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,14 +24,14 @@ export function NavBar() {
       { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.1 }
     )
 
-    ScrollTrigger.create({
+    const st = ScrollTrigger.create({
       start: "top -80px",
       onUpdate: (self) => {
         navRef.current?.classList.toggle("nav--scrolled", self.progress > 0)
       },
     })
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => st.kill()
   }, [])
 
   return (
@@ -137,6 +138,9 @@ export function NavBar() {
           <span className="w-[7px] h-[7px] rounded-full bg-primary-foreground shrink-0" />
         </button>
         </div>
+
+        {/* Mobile menu — visível apenas em mobile */}
+        <MobileMenu />
       </nav>
     </>
   )
