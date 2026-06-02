@@ -136,7 +136,7 @@ export function HeroSection({
                 {line1}
               </span>
             </span>
-            <span className="block overflow-hidden pl-[clamp(48px,12vw,200px)]">
+            <span className="block overflow-hidden pl-0 sm:pl-[clamp(48px,12vw,200px)]">
               <span ref={line2Ref} className="block" style={{ transform: "translateY(110%)" }}>
                 {line2}
               </span>

@@ -71,9 +71,6 @@ export function NavBar() {
         {/* Logo */}
         <a href="/" className="flex flex-col leading-tight group">
           <span className="text-xl font-bold tracking-tight text-foreground">RR VIAGENS</span>
-          <span className="text-[14px] tracking-[0.1em] text-foreground-subtle uppercase">
-            Pacotes pelo Mundo
-          </span>
         </a>
 
         {/* Links */}

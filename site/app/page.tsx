@@ -198,7 +198,7 @@ export default async function Home() {
                     {destaqueGrupos.descricaoCurta ?? `${destaqueGrupos.periodo ?? ""} · ${destaqueGrupos.dias ?? ""} dias`}
                   </p>
                 </ScrollReveal>
-                <ScrollReveal delay={0.2} className="flex gap-8 mb-8 border-t border-border pt-6">
+                <ScrollReveal delay={0.2} className="flex flex-wrap gap-6 mb-8 border-t border-border pt-6">
                   {([
                     { n: destaqueGrupos.dias    ? String(destaqueGrupos.dias)    : "—", l: "dias",    Icon: Clock    },
                     { n: destaqueGrupos.partida ?? "—",                                  l: "partida", Icon: Airplane },
@@ -303,7 +303,7 @@ export default async function Home() {
               </ScrollReveal>
 
               {/* Stats */}
-              <ScrollReveal delay={0.15} className="flex gap-10 mb-12 border-t border-primary-foreground/15 pt-10">
+              <ScrollReveal delay={0.15} className="flex flex-wrap gap-10 mb-12 border-t border-primary-foreground/15 pt-10">
                 {[
                   { n: "1.500+", l: "viajantes na rede"    },
                   { n: "40+",    l: "destinos em grupo"     },

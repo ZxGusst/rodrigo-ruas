@@ -55,7 +55,7 @@ function Card({ p }: { p: Pacote }) {
           {p.badge && <StatusBadge badge={p.badge} />}
         </div>
         <p className="text-primary text-[20px] mb-6">{p.periodo} · {p.dias} dias</p>
-        <div className="flex items-center justify-between pt-5 border-t border-border">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-5 border-t border-border">
           <p className="text-[20px] font-medium flex items-center gap-2 text-primary">
             <Airplane weight="fill" className="w-5 h-5 shrink-0" /> {p.partida ?? "—"}
           </p>

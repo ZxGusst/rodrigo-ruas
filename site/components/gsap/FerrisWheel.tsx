@@ -61,12 +61,14 @@ export function FerrisWheel({ grupos }: { grupos?: GrupoCard[] }) {
   const CENTER_Y = STRIDE + CARD_H / 2
   const START_Y  = CENTER_Y - LOOP_H - CARD_H / 2
 
-  const wrapRef     = useRef<HTMLDivElement>(null)
-  const trackRef    = useRef<HTMLDivElement>(null)
-  const cardRefs    = useRef<(HTMLDivElement | null)[]>([])
-  const rawY        = useRef(START_Y)
-  const lastScroll  = useRef(0)
-  const COOLDOWN    = 1100
+  const wrapRef      = useRef<HTMLDivElement>(null)
+  const trackRef     = useRef<HTMLDivElement>(null)
+  const cardRefs     = useRef<(HTMLDivElement | null)[]>([])
+  const rawY         = useRef(START_Y)
+  const lastScroll   = useRef(0)
+  const COOLDOWN     = 1100
+  const touchStartY  = useRef(0)
+  const startRawY    = useRef(0)
 
   /* applyStyles precisa acessar os valores derivados */
   const applyStyles = (y: number) => {
@@ -135,8 +137,41 @@ export function FerrisWheel({ grupos }: { grupos?: GrupoCard[] }) {
       rawY.current -= Math.sign(e.deltaY) * STRIDE
       moveTo(rawY.current, 1.0)
     }
-    wrap_.addEventListener("wheel", onWheel, { passive: false })
-    return () => wrap_.removeEventListener("wheel", onWheel)
+
+    function onTouchStart(e: TouchEvent) {
+      touchStartY.current = e.touches[0].clientY
+      startRawY.current   = rawY.current
+      gsap.killTweensOf(trackRef.current)
+    }
+
+    function onTouchMove(e: TouchEvent) {
+      e.preventDefault()
+      const delta = e.touches[0].clientY - touchStartY.current
+      const newY  = startRawY.current + delta
+      rawY.current = newY
+      gsap.set(trackRef.current, { y: newY })
+      applyStyles(newY)
+    }
+
+    function onTouchEnd(e: TouchEvent) {
+      const delta   = e.changedTouches[0].clientY - touchStartY.current
+      const steps   = Math.round(-delta / STRIDE)
+      const snapped = normalizeY(startRawY.current - steps * STRIDE)
+      rawY.current  = snapped
+      moveTo(snapped, 0.45)
+      lastScroll.current = Date.now()
+    }
+
+    wrap_.addEventListener("wheel",      onWheel,      { passive: false })
+    wrap_.addEventListener("touchstart", onTouchStart, { passive: true  })
+    wrap_.addEventListener("touchmove",  onTouchMove,  { passive: false })
+    wrap_.addEventListener("touchend",   onTouchEnd)
+    return () => {
+      wrap_.removeEventListener("wheel",      onWheel)
+      wrap_.removeEventListener("touchstart", onTouchStart)
+      wrap_.removeEventListener("touchmove",  onTouchMove)
+      wrap_.removeEventListener("touchend",   onTouchEnd)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ITEMS])
 
@@ -190,7 +225,8 @@ export function FerrisWheel({ grupos }: { grupos?: GrupoCard[] }) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M12 5v14M5 12l7 7 7-7"/>
         </svg>
-        Coloque o mouse em cima e role para ver mais grupos
+        <span className="md:hidden">Arraste para ver mais grupos</span>
+        <span className="hidden md:inline">Role para ver mais grupos</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M12 19V5M5 12l7-7 7 7"/>
         </svg>
