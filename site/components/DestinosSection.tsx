@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { ScrollReveal, RevealImage, FlipText, BtnPrimary, TransitionLink } from "@/components/gsap"
 import { ImagePlaceholder } from "@/components/gsap"
 import { PriceCalculator } from "@/app/pacotes/selecao/PriceCalculator"
@@ -105,11 +105,13 @@ export function DestinosSection({
 
         {/* Filtro de preço — inline, sem redirect */}
         <div className="mb-12">
-          <PriceCalculator
-            theme="light"
-            value={precoMax}
-            onChange={setPrecoMax}
-          />
+          <Suspense>
+            <PriceCalculator
+              theme="light"
+              value={precoMax}
+              onChange={setPrecoMax}
+            />
+          </Suspense>
         </div>
 
         {semResultado && (
