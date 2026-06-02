@@ -21,7 +21,7 @@ export function useSound() {
 }
 
 export function SoundProvider({ children }: { children: ReactNode }) {
-  const [enabled, setEnabled] = useState(false)
+  const [enabled, setEnabled] = useState(true)
   const ctxRef = useRef<AudioContext | null>(null)
 
   function getCtx() {
