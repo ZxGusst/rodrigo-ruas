@@ -159,37 +159,35 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             <ScrollReveal><p className="t-label mb-2">O roteiro</p></ScrollReveal>
             <LineReveal as="h2" className="t-h2 text-foreground mb-16">Dia a dia</LineReveal>
             <div className="flex flex-col gap-20">
-              {pacote.itinerario.map((dia, i) => (
+              {pacote.itinerario.map((dia, i) => {
+                /* fallback: usa foto da galeria ciclando pelo índice */
+                const galeria = pacote.galeria ?? []
+                const fotoFallback = galeria.length > 0 ? galeria[i % galeria.length] : null
+                const foto = dia.imagem ?? fotoFallback
+
+                return (
                 <div key={dia.numero} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                   <ScrollReveal className={i % 2 === 1 ? "lg:order-2" : ""}>
                     <p className="t-label mb-3">Dia {dia.numero}</p>
                     <h3 className="t-h3 text-foreground mb-5">{dia.titulo}</h3>
                     {dia.texto && <PortableText value={dia.texto} components={ptComponents} />}
                   </ScrollReveal>
-                  {dia.imagem ? (
-                    <RevealImage direction={i % 2 === 0 ? "right" : "left"}
-                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}
-                                 data-cursor="expand" data-cursor-theme="dark">
-                      <div className="aspect-[4/3] overflow-hidden">
-                        <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
-                          <img src={urlFor(dia.imagem).width(900).fit("crop").url()} alt={dia.titulo}
+                  <RevealImage direction={i % 2 === 0 ? "right" : "left"}
+                               className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}
+                               data-cursor="expand" data-cursor-theme="dark">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                        {foto ? (
+                          <img src={urlFor(foto).width(900).fit("crop").url()} alt={dia.titulo}
                                className="w-full h-full object-cover" loading="lazy" />
-                        </div>
-                      </div>
-                    </RevealImage>
-                  ) : (
-                    <RevealImage direction={i % 2 === 0 ? "right" : "left"}
-                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}
-                                 data-cursor="expand" data-cursor-theme="dark">
-                      <div className="aspect-[4/3] overflow-hidden">
-                        <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
+                        ) : (
                           <ImagePlaceholder className="w-full h-full" iconSize={40} />
-                        </div>
+                        )}
                       </div>
-                    </RevealImage>
-                  )}
+                    </div>
+                  </RevealImage>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         </section>
