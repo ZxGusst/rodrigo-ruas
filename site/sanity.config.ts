@@ -2,6 +2,7 @@ import { defineConfig } from "sanity"
 import { structureTool } from "sanity/structure"
 import { visionTool } from "@sanity/vision"
 import { schema } from "./sanity/schema"
+import { GuiaDoc } from "./sanity/components/GuiaDoc"
 
 const HOMEPAGE_ID = "singleton-homepage"
 
@@ -41,6 +42,16 @@ export default defineConfig({
             S.divider(),
             /* Pacotes — lista normal */
             S.documentTypeListItem("pacote").title("Pacotes"),
+            S.divider(),
+            /* Grupos WhatsApp */
+            S.documentTypeListItem("grupoWhatsapp").title("Grupos WhatsApp"),
+            S.divider(),
+            /* Documentação */
+            S.listItem()
+              .title("Como usar o CMS")
+              .child(
+                S.component(GuiaDoc).title("Como usar o CMS")
+              ),
           ]),
     }),
     visionTool(),

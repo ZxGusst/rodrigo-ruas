@@ -26,7 +26,7 @@ export function FilterBar() {
   }
 
   return (
-    <div className="flex flex-wrap gap-2 px-[clamp(20px,5vw,80px)] pt-32 pb-8">
+    <div className="flex flex-wrap gap-2 px-[clamp(20px,5vw,80px)] pt-4 pb-8">
       {CONTINENTES.map(({ label, value }) => (
         <button
           key={value}

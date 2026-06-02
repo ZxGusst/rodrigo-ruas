@@ -44,8 +44,8 @@ export default async function PacotesSelecionPage({
     <main data-page-content className="bg-[#060F18] text-white overflow-x-clip">
       <MagneticCursor />
 
-      {/* Nav topo */}
-      <div className="flex items-center justify-between
+      {/* Nav topo — relative z-50 para ficar acima do fixed blur do PackagesList */}
+      <div className="relative z-50 flex items-center justify-between
                       px-[clamp(20px,5vw,64px)] h-20">
         <a href="/" className="text-[18px] font-medium text-white/60 hover:text-white transition-colors flex items-center gap-2">
           ← Voltar para a home
