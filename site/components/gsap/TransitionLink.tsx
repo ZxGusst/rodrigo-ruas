@@ -7,6 +7,7 @@ interface TransitionLinkProps {
   href: string
   children: ReactNode
   className?: string
+  style?: React.CSSProperties
   onClick?: () => void
 }
 
@@ -14,7 +15,7 @@ interface TransitionLinkProps {
  * Link que dispara o swipe-up (PageCurtain) antes de navegar.
  * Funciona com qualquer elemento filho.
  */
-export function TransitionLink({ href, children, className = "", onClick }: TransitionLinkProps) {
+export function TransitionLink({ href, children, className = "", style, onClick }: TransitionLinkProps) {
   const router  = useRouter()
   const pending = useRef(false)
 
@@ -35,7 +36,7 @@ export function TransitionLink({ href, children, className = "", onClick }: Tran
   }
 
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a href={href} onClick={handleClick} className={className} style={style}>
       {children}
     </a>
   )
