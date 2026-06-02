@@ -318,8 +318,8 @@ export default async function Home() {
 
             </div>
 
-            {/* Direita — roda gigante */}
-            <div className="hidden lg:flex items-center justify-center pt-12">
+            {/* Direita — roda gigante (desktop) + lista mobile */}
+            <div className="flex items-center justify-center pt-0 lg:pt-12">
               <FerrisWheel grupos={gruposWhatsapp.length > 0 ? gruposWhatsapp : undefined} />
             </div>
 

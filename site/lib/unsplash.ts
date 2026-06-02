@@ -21,7 +21,7 @@ export const UNSPLASH: Record<string, string> = {
   ushuaia:        `${BASE}/photo-1517736996303-4b1c7b4e4b5d?w=1200&q=80&fm=webp&fit=crop`,
   patagonia:      `${BASE}/photo-1517736996303-4b1c7b4e4b5d?w=1200&q=80&fm=webp&fit=crop`,
   china:          `${BASE}/photo-1547036967-23d11aacaee0?w=1200&q=80&fm=webp&fit=crop`,
-  srilanka:       `${BASE}/photo-1586861203927-800a5acdcc4d?w=1200&q=80&fm=webp&fit=crop`,
+  srilanka:       `https://cdn.sanity.io/images/6g3tj20r/production/5b31546fa200cb2b85a1e4d6ff04114cb1e5d4b3-5928x3957.jpg?w=1200&fit=crop&fm=webp&q=80`,
   maldivas:       `${BASE}/photo-1514282401047-d79a71a590e8?w=1200&q=80&fm=webp&fit=crop`,
   coreia:         `${BASE}/photo-1601121141461-9d6647bef0e8?w=1200&q=80&fm=webp&fit=crop`,
   croacia:        `${BASE}/photo-1555990793-da11153b6ec5?w=1200&q=80&fm=webp&fit=crop`,
