@@ -13,7 +13,8 @@ import {
 } from "@phosphor-icons/react/dist/ssr"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
-import { HOMEPAGE_QUERY, HOMEPAGE_CONTENT_QUERY } from "@/sanity/lib/queries"
+import { HOMEPAGE_QUERY, HOMEPAGE_CONTENT_QUERY, GRUPOS_WHATSAPP_QUERY } from "@/sanity/lib/queries"
+import type { GrupoCard } from "@/components/gsap/FerrisWheel"
 import { getUnsplash, UNSPLASH } from "@/lib/unsplash"
 import { ImageOverlay } from "@/components/ImageOverlay"
 import { PriceCalculator } from "@/app/pacotes/selecao/PriceCalculator"
@@ -51,19 +52,22 @@ const pequenos = [
 /* ─── PAGE ───────────────────────────────────────────────── */
 export default async function Home() {
   /* Busca do Sanity — fallback silencioso se n�o configurado */
-  let grupos:    any[]  = []
-  let assinados: any[]  = []
-  let gruposBr:  any[]  = []
-  let cms:       any    = null
+  let grupos:          any[]      = []
+  let assinados:       any[]      = []
+  let gruposBr:        any[]      = []
+  let cms:             any        = null
+  let gruposWhatsapp:  GrupoCard[] = []
   try {
-    const [homeData, cmsData] = await Promise.all([
+    const [homeData, cmsData, waData] = await Promise.all([
       client.fetch(HOMEPAGE_QUERY),
       client.fetch(HOMEPAGE_CONTENT_QUERY),
+      client.fetch(GRUPOS_WHATSAPP_QUERY),
     ])
-    grupos    = homeData?.gruposDoRuas     ?? []
-    assinados = homeData?.assinadoByRuas   ?? []
-    gruposBr  = homeData?.gruposBrasileiros ?? []
-    cms       = cmsData ?? null
+    grupos         = homeData?.gruposDoRuas      ?? []
+    assinados      = homeData?.assinadoByRuas    ?? []
+    gruposBr       = homeData?.gruposBrasileiros  ?? []
+    cms            = cmsData ?? null
+    gruposWhatsapp = waData   ?? []
   } catch {}
 
   /* Textos com fallback */
@@ -316,7 +320,7 @@ export default async function Home() {
 
             {/* Direita — roda gigante */}
             <div className="hidden lg:flex items-center justify-center pt-12">
-              <FerrisWheel />
+              <FerrisWheel grupos={gruposWhatsapp.length > 0 ? gruposWhatsapp : undefined} />
             </div>
 
           </div>

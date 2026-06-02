@@ -91,6 +91,20 @@ export const FORMULARIO_QUERY = groq`
   }
 `
 
+/* ── Grupos WhatsApp (FerrisWheel da home) ───────────────── */
+export const GRUPOS_WHATSAPP_QUERY = groq`
+  *[_type == "grupoWhatsapp" && ativo == true] | order(ordem asc) {
+    _id,
+    nome,
+    destino,
+    heroImage,
+    partida,
+    membros,
+    maxMembros,
+    status,
+  }
+`
+
 /* ── Slugs para generateStaticParams ─────────────────────── */
 export const PACOTES_SLUGS_QUERY = groq`
   *[_type == "pacote"] { "slug": slug.current }
