@@ -90,7 +90,7 @@ export function MobileMenu() {
               onClick={() => setOpen(false)}
               className="block text-white font-black uppercase leading-none tracking-tight
                          hover:text-white/40 transition-colors duration-200"
-              style={{ fontSize: "clamp(72px, 22vw, 110px)", letterSpacing: "-0.03em" }}
+              style={{ fontSize: "48px", letterSpacing: "-0.02em" }}
             >
               {label}
             </TransitionLink>
