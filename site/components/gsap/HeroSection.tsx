@@ -7,13 +7,14 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react"
 
 gsap.registerPlugin(ScrollTrigger)
 
+const CDN = "https://cdn.sanity.io/images/6g3tj20r/production"
 const SLIDES = [
-  { src: "/imgs/japao.jpg",    alt: "Japão"    },
-  { src: "/imgs/turquia.jpg",  alt: "Turquia"  },
-  { src: "/imgs/grecia.jpg",   alt: "Grécia"   },
-  { src: "/imgs/china.jpg",    alt: "China"    },
-  { src: "/imgs/coreia.jpg",   alt: "Coreia"   },
-  { src: "/imgs/alemanha.jpg", alt: "Alemanha" },
+  { src: `${CDN}/1eee79b02431591f316d5468cf3248a32dbc1b15-5911x3941.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "Japão"    },
+  { src: `${CDN}/99b3b7110dc715b23e156012dda893c02e1a4c1d-3813x2553.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "Turquia"  },
+  { src: `${CDN}/5b92925ad592041e26edec0e8da36f52b8809587-3456x2304.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "Grécia"   },
+  { src: `${CDN}/15b6179dceefc0259c68a6475b559c55141f1f18-5184x3456.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "China"    },
+  { src: `${CDN}/376b384856e7fed73b3062e3a29025b2c8262362-4942x2941.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "Coreia"   },
+  { src: `${CDN}/f7610cd8e64591aedfe769baa67f552c9acf4979-4912x3264.jpg?w=1920&fit=crop&fm=webp&q=80`, alt: "Alemanha" },
 ]
 
 const INTERVAL = 5000
