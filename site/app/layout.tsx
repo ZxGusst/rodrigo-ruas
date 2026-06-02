@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
 import { SmoothScroll, PageTransition, PageCurtain } from "@/components/gsap"
 import { FormProvider } from "@/components/FormProvider"
+import { SoundProvider } from "@/components/SoundProvider"
 import { client } from "@/sanity/lib/client"
 import { FORMULARIO_QUERY } from "@/sanity/lib/queries"
 import "./globals.css"
@@ -28,12 +29,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="pt-BR" className={`${dmSans.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full bg-background text-foreground">
         <SmoothScroll>
+          <SoundProvider>
           <FormProvider formConfig={formConfig}>
             <PageCurtain />
             <PageTransition>
               {children}
             </PageTransition>
           </FormProvider>
+          </SoundProvider>
         </SmoothScroll>
       </body>
     </html>
