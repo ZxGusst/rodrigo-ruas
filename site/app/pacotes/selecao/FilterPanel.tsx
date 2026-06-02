@@ -48,7 +48,7 @@ export function FilterPanel() {
 
       {/* Painel expansível */}
       <div ref={panelRef} className="overflow-hidden" style={{ display: "none", height: 0 }}>
-        <div className="pb-6 flex flex-col gap-6">
+        <div className="pb-6 flex flex-col gap-6" onClick={() => setOpen(false)}>
           <Suspense>
             <FilterBar />
           </Suspense>
