@@ -8,11 +8,12 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react"
 gsap.registerPlugin(ScrollTrigger)
 
 const SLIDES = [
-  { src: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1920&q=85&fm=webp&fit=crop", alt: "Japão" },
+  { src: "https://images.unsplash.com/photo-aqZ3UAjs_M4?w=1920&q=85&fm=webp&fit=crop", alt: "Japão" },
+  { src: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=85&fm=webp&fit=crop", alt: "Ushuaia" },
   { src: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1920&q=85&fm=webp&fit=crop", alt: "Turquia" },
+  { src: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1920&q=85&fm=webp&fit=crop", alt: "China" },
   { src: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=1920&q=85&fm=webp&fit=crop", alt: "Grécia" },
-  { src: "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=1920&q=85&fm=webp&fit=crop", alt: "Islândia" },
-  { src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1920&q=85&fm=webp&fit=crop", alt: "Marrocos" },
+  { src: "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=1920&q=85&fm=webp&fit=crop", alt: "Sri Lanka" },
 ]
 
 const INTERVAL = 5000
@@ -89,7 +90,7 @@ export function HeroSection({
   const next = () => { clearTimeout(timerRef.current!); goTo((active + 1) % SLIDES.length) }
 
   return (
-    <section className="relative min-h-screen overflow-hidden flex flex-col">
+    <section className="relative min-h-screen overflow-hidden flex flex-col" data-cursor-theme="dark">
 
       {/* ── Imagens do carrossel ─────────────────────── */}
       {SLIDES.map((slide, i) => (
@@ -119,8 +120,8 @@ export function HeroSection({
 
         {/* Label + meta */}
         <div className="flex justify-between items-start mb-10">
-          <span ref={labelRef} className="t-label text-white/70 opacity-100">{label}</span>
-          <div ref={metaRef} className="text-right t-small text-white/60 opacity-100">
+          <span ref={labelRef} className="text-[20px] font-semibold tracking-[0.1em] uppercase !text-white opacity-100">{label}</span>
+          <div ref={metaRef} className="text-right text-[20px] font-medium !text-white opacity-100">
             Rodrigo Ruas<br />
             <span>93 países visitados</span>
           </div>
@@ -142,7 +143,7 @@ export function HeroSection({
           </h1>
 
           <div className="flex justify-between items-end">
-            <p ref={subRef} className="t-body-lg text-white/80 opacity-100"
+            <p ref={subRef} className="t-body-lg !text-white opacity-100"
                style={{ maxWidth: "42rem", whiteSpace: "pre-line" }}>
               {sub}
             </p>
@@ -154,7 +155,7 @@ export function HeroSection({
                 <button
                   onClick={prev}
                   className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center
-                             text-white/70 hover:bg-white/10 hover:text-white transition-all"
+                             text-white/90 hover:bg-white/10 hover:text-white transition-all"
                   aria-label="Anterior"
                 >
                   <ArrowLeft size={16} weight="bold" />
@@ -162,7 +163,7 @@ export function HeroSection({
                 <button
                   onClick={next}
                   className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center
-                             text-white/70 hover:bg-white/10 hover:text-white transition-all"
+                             text-white/90 hover:bg-white/10 hover:text-white transition-all"
                   aria-label="Próxima"
                 >
                   <ArrowRight size={16} weight="bold" />
@@ -182,7 +183,7 @@ export function HeroSection({
                       className={`block rounded-full transition-all duration-300 ${
                         i === active
                           ? "w-6 h-[3px] bg-white"
-                          : "w-[3px] h-[3px] bg-white/40 hover:bg-white/70"
+                          : "w-[3px] h-[3px] bg-white/65 hover:bg-white/90"
                       }`}
                     />
                   </button>

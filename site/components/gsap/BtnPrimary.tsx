@@ -79,7 +79,7 @@ export function BtnPrimary({
 
   const cls =
     `inline-flex items-center gap-3 ` +
-    `text-[16px] font-semibold px-7 py-3.5 rounded-full ` +
+    `text-[20px] font-semibold px-8 py-4 rounded-full ` +
     `transition-all duration-200 cursor-pointer ${variantCls} ${className}`
 
   const events = {

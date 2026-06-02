@@ -1,4 +1,4 @@
-/* Revalida a cada 60s — mudanças no Sanity aparecem em até 1 minuto */
+/* Revalida a cada 60s — mudan�as no Sanity aparecem em at� 1 minuto */
 export const revalidate = 60
 
 import {
@@ -7,6 +7,7 @@ import {
   LineReveal, RevealImage, BtnPrimary, MagneticCursor,
   PackagesReel, TransitionLink,
 } from "@/components/gsap"
+import { FerrisWheel } from "@/components/gsap/FerrisWheel"
 import {
   Globe, Users, MapPin, Clock, Airplane, Star, Phone,
 } from "@phosphor-icons/react/dist/ssr"
@@ -15,6 +16,11 @@ import { urlFor } from "@/sanity/lib/image"
 import { HOMEPAGE_QUERY, HOMEPAGE_CONTENT_QUERY } from "@/sanity/lib/queries"
 import { getUnsplash, UNSPLASH } from "@/lib/unsplash"
 import { ImageOverlay } from "@/components/ImageOverlay"
+import { PriceCalculator } from "@/app/pacotes/selecao/PriceCalculator"
+import { BtnForm } from "@/components/BtnForm"
+import { DestinosSection } from "@/components/DestinosSection"
+import { StatusBadge } from "@/components/StatusBadge"
+import { Suspense } from "react"
 
 const stats = [
   { value: 93,   suffix: "",  label: "países visitados",    Icon: Globe   },
@@ -30,21 +36,21 @@ const passos = [
 ]
 
 const galeria  = [
+  { label: "Japão",    slug: "japao"    },
+  { label: "Turquia",  slug: "turquia"  },
   { label: "Grécia",   slug: "grecia"   },
-  { label: "Marrocos", slug: "marrocos" },
-  { label: "Islândia", slug: "islandia" },
-  { label: "Egito",    slug: "egito"    },
+  { label: "Croácia",  slug: "croacia"  },
 ]
 const pequenos = [
-  { label: "Tailândia", slug: "tailandia" },
-  { label: "Portugal",  slug: "portugal"  },
-  { label: "Japão",     slug: "japao"     },
-  { label: "Peru",      slug: "peru"      },
+  { label: "China",      slug: "china"    },
+  { label: "Sri Lanka",  slug: "srilanka" },
+  { label: "Marrocos",   slug: "marrocos" },
+  { label: "Ushuaia",    slug: "ushuaia"  },
 ]
 
 /* ─── PAGE ───────────────────────────────────────────────── */
 export default async function Home() {
-  /* Busca do Sanity — fallback silencioso se não configurado */
+  /* Busca do Sanity — fallback silencioso se n�o configurado */
   let grupos:    any[]  = []
   let assinados: any[]  = []
   let gruposBr:  any[]  = []
@@ -89,23 +95,26 @@ export default async function Home() {
     },
   }
 
-  /* Fallback placeholders — exibidos enquanto o Sanity não tem dados */
+  /* Fallback — dados reais do site original (ativos em Jun/2026) */
   const MOCK_GRUPOS = grupos.length > 0 ? grupos : [
-    { _id:"g1", titulo:"Japão",    slug:"japao",    badge:"vagas", heroImage:null, periodo:"Out 2026", dias:12, partida:"04/10", vagas:20, descricaoCurta:"Rodrigo guia pessoalmente. Kyoto, Tóquio, Osaka e roteiros que só ele conhece." },
-    { _id:"g2", titulo:"Alemanha", slug:"alemanha", badge:null,    heroImage:null, periodo:"Nov 2026", dias:9,  partida:"15/11", vagas:18, descricaoCurta:"Berlim, Baviera e o Castelo de Neuschwanstein com curadoria do Rodrigo." },
+    { _id:"g1", titulo:"Japão",                  slug:"japao",    badge:"vagas",    heroImage:null, periodo:"Out 2026", dias:10, partida:"08/10", vagas:20, descricaoCurta:"Rodrigo guia pessoalmente. Kyoto, Tóquio, Osaka, Monte Fuji e roteiros que só ele conhece." },
+    { _id:"g2", titulo:"Japão + Coreia do Sul",  slug:"japao",    badge:null,       heroImage:null, periodo:"Out 2026", dias:14, partida:"12/10", vagas:20, descricaoCurta:"Dois países, uma viagem inesquecível. Kyoto, Tóquio, Hakone, Seul e Busan com Rodrigo Ruas." },
+    { _id:"g3", titulo:"Ushuaia",                slug:"ushuaia",  badge:"vagas",    heroImage:null, periodo:"Ago 2026", dias:6,  partida:"06/08", vagas:20, descricaoCurta:"O fim do mundo existe e Rodrigo vai te levar lá. Neve, glaciares e o Canal Beagle em agosto." },
   ]
 
   const MOCK_ASSINADOS = assinados.length > 0 ? assinados : [
-    { _id:"m1", titulo:"Turquia",   slug:"turquia",  badge:null,     heroImage:null, periodo:"Set 2026", dias:10, partida:"20/09", descricaoCurta:"Istambul, Capadócia e a costa turca." },
-    { _id:"m2", titulo:"Grécia",    slug:"grecia",   badge:"esgotado", heroImage:null, periodo:"Jun 2026", dias:10, partida:"10/06", descricaoCurta:"Atenas, Santorini e Mykonos." },
-    { _id:"m3", titulo:"Marrocos",  slug:"marrocos", badge:null,     heroImage:null, periodo:"Abr 2026", dias:8,  partida:"08/04", descricaoCurta:"Marrakech, Saara e Chefchaouen." },
+    { _id:"m1", titulo:"Grécia",    slug:"grecia",   badge:null,       heroImage:null, periodo:"Qualquer data", dias:11, partida:null, descricaoCurta:"Atenas, Mykonos e Santorini em pacote privativo. Sai quando quiser, sem grupo." },
+    { _id:"m2", titulo:"Croácia",   slug:"croacia",  badge:null,       heroImage:null, periodo:"Qualquer data", dias:9,  partida:null, descricaoCurta:"Dubrovnik, Split, Hvar e Plitvice. Roteiro curado por Rodrigo para casais e viagens solo." },
+    { _id:"m3", titulo:"Toscana",   slug:"toscana",  badge:null,       heroImage:null, periodo:"Qualquer data", dias:9,  partida:null, descricaoCurta:"Florença, Siena, Chianti e Val d'Orcia. A Itália que vai além do turismo de massa." },
+    { _id:"m4", titulo:"Turquia",   slug:"turquia",  badge:null,       heroImage:null, periodo:"Qualquer data", dias:7,  partida:null, descricaoCurta:"Istambul e Capadócia em roteiro privativo. 5 estrelas, no seu ritmo, na sua data." },
   ]
 
   const MOCK_GRUPOS_BR = gruposBr.length > 0 ? gruposBr : [
-    { _id:"b1", titulo:"Tailândia",  slug:"tailandia", badge:null,   heroImage:null, periodo:"Nov 2026", dias:11, partida:"10/11" },
-    { _id:"b2", titulo:"Portugal",   slug:"portugal",  badge:"vagas", heroImage:null, periodo:"Mai 2026", dias:7,  partida:"15/05" },
-    { _id:"b3", titulo:"Egito",      slug:"egito",     badge:null,   heroImage:null, periodo:"Mar 2026", dias:10, partida:"15/03" },
-    { _id:"b4", titulo:"Islândia",   slug:"islandia",  badge:null,   heroImage:null, periodo:"Jul 2026", dias:9,  partida:"05/07" },
+    { _id:"b1", titulo:"Turquia e Grécia",       slug:"turquia",   badge:"vagas",    heroImage:null, periodo:"Jun 2026", dias:17, partida:"10/06" },
+    { _id:"b2", titulo:"China",                  slug:"china",     badge:null,       heroImage:null, periodo:"Jun 2026", dias:18, partida:"27/06" },
+    { _id:"b3", titulo:"Norte da Alemanha",      slug:"alemanha",  badge:null,       heroImage:null, periodo:"Set 2026", dias:15, partida:"04/09" },
+    { _id:"b4", titulo:"Sri Lanka e Maldivas",   slug:"srilanka",  badge:null,       heroImage:null, periodo:"Out 2026", dias:17, partida:"06/10" },
+    { _id:"b5", titulo:"China",                  slug:"china",     badge:null,       heroImage:null, periodo:"Out 2026", dias:18, partida:"17/10" },
   ]
 
   const destaqueGrupos    = MOCK_GRUPOS[0]    ?? null
@@ -116,7 +125,7 @@ export default async function Home() {
       <MagneticCursor />
       <NavBar />
 
-      {/* ══ HERO ═══════════════════════════════════════════ */}
+      {/* �� HERO ������������������������������������������� */}
       <HeroSection
         label={copy.heroLabel}
         line1={copy.heroLine1}
@@ -124,14 +133,14 @@ export default async function Home() {
         sub={copy.heroSub}
       />
 
-      {/* ══ DIVIDER ════════════════════════════════════════ */}
+      {/* �� DIVIDER ���������������������������������������� */}
       <div className="wrap">
         <ScrollReveal><div className="border-t-2 border-foreground" /></ScrollReveal>
       </div>
 
-      {/* ══ SEÇÃO 1 — GRUPOS DO RUAS (premium) ════════════ */}
+      {/* �� SEÇÃO 1 — GRUPOS DO RUAS (premium) ������������ */}
       <section id="pacotes" className="py-16">
-        {/* Header da seção */}
+        {/* Header da se��o */}
         <div className="wrap mb-10">
           <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -148,8 +157,8 @@ export default async function Home() {
         {destaqueGrupos && (
           <div className="wrap">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-border">
-              <div className="relative overflow-hidden" style={{ height: "150vh" }}
-                   data-cursor="expand" data-cursor-label="VER PACOTE">
+              <div className="relative overflow-hidden aspect-[4/3]"
+                   data-cursor="expand" data-cursor-label="VER PACOTE" data-cursor-theme="dark">
                 <RevealImage direction="up" className="absolute inset-0">
                   <div className="absolute inset-0 overflow-hidden group">
                     <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.03]">
@@ -166,14 +175,14 @@ export default async function Home() {
                 </RevealImage>
                 {destaqueGrupos.badge && (
                   <span className="absolute top-5 left-5 z-10 flex items-center gap-1.5
-                                   bg-warning/90 text-white text-[13px] font-bold
+                                   bg-warning/90 text-white text-[20px] font-bold
                                    tracking-wide uppercase px-4 py-2 rounded-full">
                     <Clock size={14} weight="bold" />
                     {destaqueGrupos.badge === "vagas" ? "Últimas Vagas" : "Esgotado"}
                   </span>
                 )}
               </div>
-              <div className="sticky top-20 self-start p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border">
+              <div className="p-8 lg:p-12 border-t lg:border-t-0 lg:border-l border-border flex flex-col justify-center">
                 <ScrollReveal>
                   <p className="t-label text-foreground-subtle mb-4">Destino em destaque</p>
                 </ScrollReveal>
@@ -193,7 +202,7 @@ export default async function Home() {
                   ] as {n:string,l:string,Icon:any}[]).map(({ n, l, Icon }) => (
                     <div key={l}>
                       <p className="text-[36px] font-bold text-foreground leading-none">{n}</p>
-                      <p className="t-label mt-1 flex items-center gap-1"><Icon size={12} /> {l}</p>
+                      <p className="t-label mt-1 flex items-center gap-1"><Icon weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> {l}</p>
                     </div>
                   ))}
                 </ScrollReveal>
@@ -211,14 +220,14 @@ export default async function Home() {
         {MOCK_GRUPOS.length > 1 && (
           <>
             <div className="wrap border-t border-border pt-10 pb-4 mt-16">
-              <p className="t-small text-foreground-subtle">mais grupos → scroll para explorar</p>
+              <p className="text-[20px] font-medium text-foreground-subtle">mais grupos → scroll para explorar</p>
             </div>
             <PackagesReel pacotes={MOCK_GRUPOS.slice(1)} />
           </>
         )}
       </section>
 
-      {/* ══ SEÇÃO 2 — PACOTES ASSINADOS — grid de cards ════ */}
+      {/* �� SEÇÃO 2 — PACOTES ASSINADOS — grid de cards ���� */}
       <section className="py-20 border-t-2 border-foreground">
           <div className="wrap">
             <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
@@ -248,12 +257,7 @@ export default async function Home() {
                   </RevealImage>
                   <div className="p-6">
                     {p.badge && (
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wide
-                                       px-3 py-1 rounded-full mb-3
-                                       ${p.badge === "vagas" ? "bg-warning/10 text-warning" : "bg-foreground/8 text-foreground-muted"}`}>
-                        <Clock size={10} weight="bold" />
-                        {p.badge === "vagas" ? "Últimas vagas" : "Esgotado"}
-                      </span>
+                      <StatusBadge badge={p.badge} className="mb-3" />
                     )}
                     <FlipText as="h3" className="text-[20px] font-bold text-foreground mb-1" stagger={0.013}>
                       {p.titulo.toUpperCase()}
@@ -261,7 +265,7 @@ export default async function Home() {
                     <p className="t-body mb-5">{p.periodo} · {p.dias} dias</p>
                     <div className="flex items-center justify-between pt-4 border-t border-border">
                       <p className="t-small flex items-center gap-1.5">
-                        <Airplane size={13} /> {p.partida ?? "—"}
+                        <Airplane weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> {p.partida ?? "—"}
                       </p>
                       <TransitionLink href={`/pacotes/${p.slug}`}>
                         <BtnPrimary variant="outline" stagger={0.013}>Ver pacote</BtnPrimary>
@@ -274,44 +278,52 @@ export default async function Home() {
           </div>
         </section>
 
-      {/* ══ SEÇÃO 3 — GRUPOS DE BRASILEIROS — grid menor ═══ */}
-      <section className="py-20 border-t border-border bg-background-elevated">
-          <div className="wrap">
-            <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-              <div>
-                <p className="t-label mb-2">{copy.sec.gruposBr.label}</p>
-                <h2 className="t-h2 text-foreground">{copy.sec.gruposBr.titulo}</h2>
-              </div>
-              <p className="t-body max-w-sm text-foreground-muted md:text-right">
-                {copy.sec.gruposBr.desc}
-              </p>
-            </ScrollReveal>
+      {/* �� SEÇÃO 3 — COMUNIDADE �������������������������� */}
+      <section className="border-t border-border bg-foreground text-primary-foreground py-24" data-cursor-theme="dark">
+        <div className="wrap">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {MOCK_GRUPOS_BR.map((p: any, i: number) => (
-                <ScrollReveal key={p._id} delay={i * 0.05}
-                  className="group cursor-pointer" data-cursor="expand" data-cursor-label="VER">
-                  <TransitionLink href={`/pacotes/${p.slug}`}>
-                    <div className="overflow-hidden mb-3">
-                      <div className="aspect-[3/4] transition-transform duration-700 group-hover:scale-[1.05] overflow-hidden">
-                        {(() => {
-                          const src = p.heroImage ? urlFor(p.heroImage).width(500).fit("crop").url() : getUnsplash(p.slug, "sm")
-                          return src ? <img src={src} alt={p.titulo} className="w-full h-full object-cover" loading="lazy" /> : <ImagePlaceholder className="w-full h-full" iconSize={28} />
-                        })()}
-                      </div>
-                    </div>
-                    <FlipText as="p" className="text-[16px] font-bold text-foreground mb-1" stagger={0.012}>
-                      {p.titulo.toUpperCase()}
-                    </FlipText>
-                    <p className="t-small text-foreground-subtle">{p.periodo} · {p.dias} dias</p>
-                  </TransitionLink>
-                </ScrollReveal>
-              ))}
+            {/* Esquerda — copy */}
+            <div>
+              <ScrollReveal>
+                <p className="t-label !text-primary-foreground/60 mb-6">Comunidade</p>
+              </ScrollReveal>
+              <LineReveal as="h2" className="t-h1 text-primary-foreground mb-8 leading-none">
+                Faça parte da nossa rede de viajantes
+              </LineReveal>
+              <ScrollReveal delay={0.1}>
+                <p className="t-body-lg !text-primary-foreground/80 mb-10">
+                  Mais de 1.500 brasileiros já viajaram com o Rodrigo Ruas.
+                  Quem vai uma vez, volta. Você vai fazer amigos para a vida.
+                </p>
+              </ScrollReveal>
+
+              {/* Stats */}
+              <ScrollReveal delay={0.15} className="flex gap-10 mb-12 border-t border-primary-foreground/15 pt-10">
+                {[
+                  { n: "1.500+", l: "viajantes na rede"    },
+                  { n: "40+",    l: "destinos em grupo"     },
+                  { n: "100%",   l: "grupos com guia BR"    },
+                ].map(({ n, l }) => (
+                  <div key={l}>
+                    <p className="text-[36px] font-bold text-primary-foreground leading-none">{n}</p>
+                    <p className="t-label !text-primary-foreground/60 mt-1">{l}</p>
+                  </div>
+                ))}
+              </ScrollReveal>
+
             </div>
-          </div>
-        </section>
 
-      {/* ══ FAIXA — QUEM É RODRIGO ═════════════════════════ */}
+            {/* Direita — roda gigante */}
+            <div className="hidden lg:flex items-center justify-center pt-12">
+              <FerrisWheel />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* �� FAIXA — QUEM É RODRIGO ������������������������� */}
       <section className="border-t-2 border-b-2 border-foreground py-16">
         <div className="wrap">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 items-center">
@@ -334,87 +346,17 @@ export default async function Home() {
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={0.25}>
-                <BtnPrimary href="https://wa.me/5511966401489" target="_blank" rel="noreferrer">
-                  Falar com Rodrigo
-                </BtnPrimary>
+                <BtnForm>Falar com Rodrigo</BtnForm>
               </ScrollReveal>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══ GALERIA DE DESTINOS ════════════════════════════ */}
-      <section id="destinos" className="py-20">
-        <div className="wrap">
-          <ScrollReveal className="flex justify-between items-end mb-10">
-            <div>
-              <p className="t-label mb-2">Destinos</p>
-              <h2 className="t-h2 text-foreground">Onde você quer ir?</h2>
-            </div>
-            <p className="t-small hidden md:flex items-center gap-2 text-foreground-subtle">
-              <Globe size={14} /> 141+ roteiros ativos
-            </p>
-          </ScrollReveal>
+      {/* �� DESTINOS — cards por tipo ���������������������� */}
+       <DestinosSection grupos={MOCK_GRUPOS} assinados={MOCK_ASSINADOS} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <ScrollReveal className="relative overflow-hidden group"
-                          data-cursor="expand" data-cursor-label="TURQUIA">
-              <RevealImage direction="up" className="overflow-hidden">
-                <div className="aspect-[3/4] transition-transform duration-700 group-hover:scale-[1.05]">
-                  <img src={getUnsplash("turquia","lg") ?? ""} alt="Turquia" className="w-full h-full object-cover" loading="lazy" />
-                </div>
-              </RevealImage>
-              <ImageOverlay blur={12} darkFrom={0.72} darkMid={0.18} blurStop="45%" blurFade="72%" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 pointer-events-none">
-                <p className="text-[22px] font-bold text-white uppercase">Turquia</p>
-                <p className="text-white/80 text-[15px] mt-1 flex items-center gap-1.5">
-                  <Clock size={13} /> 10 dias
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <div className="grid grid-cols-2 gap-4">
-              {galeria.map(({ label, slug }, i) => (
-                <ScrollReveal key={slug} delay={i * 0.08}
-                  className="relative overflow-hidden group"
-                  data-cursor="expand" data-cursor-label={label.toUpperCase()}
-                >
-                  <div className="aspect-square overflow-hidden">
-                    <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.06]">
-                      <img src={getUnsplash(slug,"md") ?? ""} alt={label} className="w-full h-full object-cover" loading="lazy" />
-                    </div>
-                  </div>
-                  <ImageOverlay blur={8} darkFrom={0.68} darkMid={0.12} blurStop="38%" blurFade="68%" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
-                    <p className="text-[16px] font-bold text-white uppercase">{label}</p>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {pequenos.map(({ label, slug }, i) => (
-              <ScrollReveal key={slug} delay={i * 0.06}
-                className="relative overflow-hidden group"
-                data-cursor="expand" data-cursor-label={label.toUpperCase()}
-              >
-                <RevealImage direction="up" className="overflow-hidden">
-                  <div className="aspect-[4/3] transition-transform duration-700 group-hover:scale-[1.06]">
-                    <img src={getUnsplash(slug,"sm") ?? ""} alt={label} className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                </RevealImage>
-                <ImageOverlay blur={6} darkFrom={0.65} darkMid={0.10} blurStop="30%" blurFade="60%" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
-                  <p className="text-[14px] font-bold text-white uppercase">{label}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ PULL QUOTE ═════════════════════════════════════ */}
+      {/* �� PULL QUOTE ������������������������������������� */}
       <section className="bg-background-section py-20 border-t border-b border-border">
         <div className="wrap">
           <div className="max-w-3xl mx-auto text-center">
@@ -434,7 +376,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ══ PROCESSO ═══════════════════════════════════════ */}
+      {/* �� PROCESSO ��������������������������������������� */}
       <section className="py-20">
         <div className="wrap">
           <ScrollReveal><p className="t-label mb-2">O processo</p></ScrollReveal>
@@ -455,8 +397,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ══ NÚMEROS ════════════════════════════════════════ */}
-      <section className="bg-foreground text-primary-foreground py-20">
+      {/* �� NÚMEROS ���������������������������������������� */}
+      <section className="bg-foreground text-primary-foreground py-20" data-cursor-theme="dark">
         <div className="wrap">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {copy.stats.map(({ valor, sufixo, label }: any, i: number) => {
@@ -468,7 +410,7 @@ export default async function Home() {
                      style={{ fontSize: "clamp(48px,6vw,88px)" }}>
                     <CountUp value={valor} suffix={sufixo ?? ""} />
                   </p>
-                  <p className="text-[14px] font-semibold tracking-[0.1em] uppercase text-primary-foreground/50 mt-2">
+                  <p className="text-[20px] font-semibold tracking-[0.1em] uppercase text-primary-foreground/75 mt-2">
                     {label}
                   </p>
                 </ScrollReveal>
@@ -478,7 +420,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ══ CTA FINAL ══════════════════════════════════════ */}
+      {/* �� CTA FINAL �������������������������������������� */}
       <section id="contato" className="py-24 text-center">
         <div className="wrap">
           <ScrollReveal><p className="t-label mb-4">Reserve agora</p></ScrollReveal>
@@ -489,53 +431,52 @@ export default async function Home() {
             <p className="t-body-lg mb-10 max-w-lg mx-auto">
               {copy.ctaSubtitulo}
             </p>
-            <BtnPrimary href="https://wa.me/5511966401489" target="_blank" rel="noreferrer">
-              Falar no WhatsApp agora
-            </BtnPrimary>
+            <BtnForm>Falar no WhatsApp agora</BtnForm>
             <p className="t-small mt-4 flex items-center justify-center gap-2 text-foreground-subtle">
-              <Clock size={14} /> Resposta em até 1 hora · (11) 96640-1489
+              <Clock weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> Resposta em até 1 hora · (11) 96640-1489
             </p>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* ══ FOOTER ═════════════════════════════════════════ */}
-      <footer id="sobre" className="bg-foreground text-primary-foreground py-16">
+      {/* �� FOOTER ����������������������������������������� */}
+      <footer id="sobre" className="bg-foreground text-primary-foreground py-16" data-cursor-theme="dark">
         <div className="wrap">
           <div className="flex flex-col md:flex-row justify-between gap-10 mb-12">
             <div>
               <FlipText as="p" className="text-[22px] font-bold tracking-tight text-primary-foreground mb-1" stagger={0.02}>
                 RR VIAGENS
               </FlipText>
-              <p className="text-primary-foreground/50 text-[15px]">Pacotes pelo Mundo</p>
+              <p className="text-primary-foreground/75 text-[20px]">Pacotes pelo Mundo</p>
             </div>
             <div className="flex flex-wrap gap-16">
               <div className="flex flex-col gap-4">
                 {["Pacotes","Destinos","Sobre","Contato"].map(l => (
                   <FlipText key={l} as="a" href={`#${l.toLowerCase()}`}
-                    className="text-[16px] text-primary-foreground/60" stagger={0.016}>
+                    className="text-[20px] text-primary-foreground/80" stagger={0.016}>
                     {l}
                   </FlipText>
                 ))}
               </div>
               <div className="flex flex-col gap-3">
                 <a href="https://instagram.com/rodrigoruas"
-                   className="text-[15px] text-primary-foreground/60 flex items-center gap-2 hover:text-primary-foreground transition-colors">
-                  <MapPin size={14} /> @rodrigoruas
+                   className="text-[20px] text-primary-foreground/80 flex items-center gap-2 hover:text-primary-foreground transition-colors">
+                  <MapPin weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> @rodrigoruas
                 </a>
                 <a href="https://wa.me/5511966401489"
-                   className="text-[15px] text-primary-foreground/60 flex items-center gap-2 hover:text-primary-foreground transition-colors">
-                  <Phone size={14} /> (11) 96640-1489
+                   className="text-[20px] text-primary-foreground/80 flex items-center gap-2 hover:text-primary-foreground transition-colors">
+                  <Phone weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> (11) 96640-1489
                 </a>
               </div>
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between gap-2 border-t border-primary-foreground/10 pt-6">
-            <p className="text-[14px] text-primary-foreground/30">© 2026 RR Viagens — CNPJ 52.437.341/0001-22</p>
-            <p className="text-[14px] text-primary-foreground/20">Feito com amor no Brasil</p>
+            <p className="text-[20px] text-primary-foreground/30">© 2026 RR Viagens — CNPJ 52.437.341/0001-22</p>
+            <p className="text-[20px] text-primary-foreground/20">Feito com amor no Brasil</p>
           </div>
         </div>
       </footer>
     </main>
   )
 }
+

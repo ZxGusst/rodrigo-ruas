@@ -13,12 +13,17 @@ import {
   TransitionLink,
 } from "@/components/gsap"
 import { Clock, Airplane, Users, MapPin, Star, Check, X } from "@phosphor-icons/react/dist/ssr"
+import { BtnForm } from "@/components/BtnForm"
+import { StatusBadge } from "@/components/StatusBadge"
+import { PricingTicket } from "@/components/PricingTicket"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface Dia { numero: number; titulo: string; texto?: any[]; imagem?: any }
 interface PacoteData {
   _id: string; titulo: string; slug: string; badge?: string; heroImage?: any
-  periodo?: string; dias?: number; partida?: string; vagas?: number
+  tipo?: string; periodo?: string; dias?: number; partida?: string; vagas?: number
+  preco?: number; precoSemAero?: number; taxaServico?: number; cidadePartida?: string
+  politicaCancelamento?: string; politicaReagendamento?: string
   intro?: any[]; pullQuote?: string; itinerario?: Dia[]
   galeria?: any[]; incluso?: string[]; naoIncluso?: string[]; metaDescricao?: string
 }
@@ -71,20 +76,15 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
         </div>
         <ImageOverlay blur={14} darkFrom={0.88} darkMid={0.25} blurStop="35%" blurFade="65%" />
         <div className="relative z-10 wrap pb-16 w-full">
-          {pacote.badge && (
-            <span className="inline-flex items-center gap-1.5 bg-warning/90 text-white text-[13px] font-bold uppercase tracking-wide px-4 py-2 rounded-full mb-6">
-              <Clock size={13} weight="bold" />
-              {pacote.badge === "vagas" ? "Últimas Vagas" : "Esgotado"}
-            </span>
-          )}
+          {pacote.badge && <StatusBadge badge={pacote.badge} className="mb-6" />}
           <LineReveal as="h1" className="t-hero text-white leading-none mb-6">
             {pacote.titulo.toUpperCase()}
           </LineReveal>
           <div className="flex flex-wrap gap-6 text-white/80 text-[16px]">
-            {pacote.periodo  && <span className="flex items-center gap-2"><Clock    size={16} /> {pacote.periodo}</span>}
-            {pacote.dias     && <span className="flex items-center gap-2"><Airplane size={16} /> {pacote.dias} dias</span>}
-            {pacote.partida  && <span className="flex items-center gap-2"><MapPin   size={16} /> Partida: {pacote.partida}</span>}
-            {pacote.vagas    && <span className="flex items-center gap-2"><Users    size={16} /> {pacote.vagas} vagas</span>}
+            {pacote.periodo  && <span className="flex items-center gap-2"><Clock    weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> {pacote.periodo}</span>}
+            {pacote.dias     && <span className="flex items-center gap-2"><Airplane weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> {pacote.dias} dias</span>}
+            {pacote.partida  && <span className="flex items-center gap-2"><MapPin   weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> Partida: {pacote.partida}</span>}
+            {pacote.vagas    && <span className="flex items-center gap-2"><Users    weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> {pacote.vagas} vagas</span>}
           </div>
         </div>
       </section>
@@ -106,7 +106,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                 </div>
               ))}
             </div>
-            <BtnPrimary href={WA} target="_blank" rel="noreferrer">Quero este pacote</BtnPrimary>
+            <BtnForm pacote={pacote.titulo} tipo={pacote.tipo}>Quero este pacote</BtnForm>
           </div>
         </div>
       </div>
@@ -117,7 +117,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
           <div className="wrap" style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
             <ScrollReveal>
               <p className="t-label mb-8 flex items-center gap-2">
-                <Star size={14} weight="fill" /> Curadoria de Rodrigo Ruas
+                <Star weight="fill" className="w-4 h-4 md:w-6 md:h-6 shrink-0" /> Curadoria de Rodrigo Ruas
               </p>
               <PortableText value={pacote.intro} components={ptComponents} />
             </ScrollReveal>
@@ -127,7 +127,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
 
       {/* ══ IMAGEM FULL WIDTH ══════════════════════════════ */}
       {pacote.galeria && pacote.galeria.length > 0 && (
-        <RevealImage direction="up" className="overflow-hidden" data-cursor="expand">
+        <RevealImage direction="up" className="overflow-hidden" data-cursor="expand" data-cursor-theme="dark">
           <div className="aspect-[21/9] group overflow-hidden">
             <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.03]">
               <img src={urlFor(pacote.galeria[0]).width(1920).fit("crop").url()}
@@ -160,16 +160,16 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             <LineReveal as="h2" className="t-h2 text-foreground mb-16">Dia a dia</LineReveal>
             <div className="flex flex-col gap-20">
               {pacote.itinerario.map((dia, i) => (
-                <div key={dia.numero} className={`grid grid-cols-1 ${dia.imagem ? "lg:grid-cols-2" : ""} gap-12 items-start`}>
-                  <ScrollReveal className={i % 2 === 1 && dia.imagem ? "lg:order-2" : ""}>
+                <div key={dia.numero} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                  <ScrollReveal className={i % 2 === 1 ? "lg:order-2" : ""}>
                     <p className="t-label mb-3">Dia {dia.numero}</p>
                     <h3 className="t-h3 text-foreground mb-5">{dia.titulo}</h3>
                     {dia.texto && <PortableText value={dia.texto} components={ptComponents} />}
                   </ScrollReveal>
                   {dia.imagem ? (
                     <RevealImage direction={i % 2 === 0 ? "right" : "left"}
-                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : ""}`}
-                                 data-cursor="expand">
+                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}
+                                 data-cursor="expand" data-cursor-theme="dark">
                       <div className="aspect-[4/3] overflow-hidden">
                         <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
                           <img src={urlFor(dia.imagem).width(900).fit("crop").url()} alt={dia.titulo}
@@ -179,8 +179,8 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                     </RevealImage>
                   ) : (
                     <RevealImage direction={i % 2 === 0 ? "right" : "left"}
-                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : ""}`}
-                                 data-cursor="expand">
+                                 className={`overflow-hidden group ${i % 2 === 1 ? "lg:order-1" : "lg:order-2"}`}
+                                 data-cursor="expand" data-cursor-theme="dark">
                       <div className="aspect-[4/3] overflow-hidden">
                         <div className="w-full h-full transition-transform duration-700 group-hover:scale-[1.04]">
                           <ImagePlaceholder className="w-full h-full" iconSize={40} />
@@ -205,7 +205,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             </ScrollReveal>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {pacote.galeria.slice(1).map((img, i) => (
-                <RevealImage key={i} direction="up" delay={i * 0.06} className="overflow-hidden group" data-cursor="expand">
+                <RevealImage key={i} direction="up" delay={i * 0.06} className="overflow-hidden group" data-cursor="expand" data-cursor-theme="dark">
                   <div className="aspect-square transition-transform duration-700 group-hover:scale-[1.05]">
                     <img src={urlFor(img).width(600).height(600).fit("crop").url()} alt={`Foto ${i + 2}`}
                          className="w-full h-full object-cover" loading="lazy" />
@@ -225,7 +225,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             {/* Painel INCLUSO — navy */}
             <div className="bg-foreground text-primary-foreground p-[clamp(32px,6vw,72px)]">
               <ScrollReveal>
-                <p className="t-label text-primary-foreground/40 mb-3">O que está incluso</p>
+                <p className="t-label !text-primary-foreground/75 mb-3">O que está incluso</p>
                 <h3 className="font-bold text-primary-foreground mb-10"
                     style={{ fontSize: "clamp(32px,4vw,56px)", letterSpacing: "-0.02em" }}>
                   Incluso no pacote
@@ -237,7 +237,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                     <span className="shrink-0 w-8 h-8 rounded-full bg-primary-foreground/15 flex items-center justify-center">
                       <Check size={18} weight="bold" className="text-primary-foreground" />
                     </span>
-                    <p className="text-[17px] font-medium text-primary-foreground leading-snug">{item}</p>
+                    <p className="text-[19px] font-medium text-primary-foreground leading-snug">{item}</p>
                   </ScrollReveal>
                 ))}
               </div>
@@ -258,7 +258,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                     <span className="shrink-0 w-8 h-8 rounded-full bg-foreground/[0.08] flex items-center justify-center border border-border">
                       <X size={16} weight="bold" className="text-foreground-muted" />
                     </span>
-                    <p className="text-[17px] text-foreground-muted leading-snug">{item}</p>
+                    <p className="text-[19px] text-foreground-muted leading-snug">{item}</p>
                   </ScrollReveal>
                 ))}
               </div>
@@ -268,25 +268,62 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
         </section>
       ) : null}
 
-      {/* ══ CTA FINAL ══════════════════════════════════════ */}
-      <section className="bg-foreground text-primary-foreground py-24">
-        <div className="wrap text-center">
-          <ScrollReveal><p className="t-label text-primary-foreground/50 mb-4">Pronto para ir?</p></ScrollReveal>
-          <LineReveal as="h2" className="t-h1 text-primary-foreground mb-6 max-w-2xl mx-auto">
-            {`Garanta sua vaga em ${pacote.titulo}${pacote.periodo ? ` — ${pacote.periodo}` : ""}.`}
-          </LineReveal>
-          <ScrollReveal delay={0.15}>
-            <p className="t-body-lg text-primary-foreground/60 mb-10 max-w-md mx-auto">
-              {pacote.vagas ? `Grupo de ${pacote.vagas} pessoas.` : ""} Atendimento direto com Rodrigo. Vagas limitadas.
-            </p>
-            <BtnPrimary href={WA} target="_blank" rel="noreferrer"
-                        className="!bg-primary-foreground !text-primary">
-              Falar no WhatsApp agora
-            </BtnPrimary>
-            <p className="t-small mt-4 flex items-center justify-center gap-2 text-primary-foreground/40">
-              <Clock size={14} /> Resposta em até 1 hora
-            </p>
+      {/* ══ CTA FINAL + TICKET ═════════════════════════════ */}
+      <section className="relative bg-foreground text-primary-foreground py-24 overflow-hidden" data-cursor-theme="dark">
+
+        {/* bg image nítida + overlay preto */}
+        {pacote.heroImage && (
+          <>
+            <div className="absolute inset-0 z-0">
+              <img
+                src={urlFor(pacote.heroImage).width(1920).fit("crop").url()}
+                alt=""
+                className="w-full h-full object-cover opacity-40"
+                aria-hidden
+              />
+            </div>
+            <div className="absolute inset-0 z-[1] bg-black/60" />
+          </>
+        )}
+        <div className="wrap relative z-[2]">
+
+          {/* Texto acima — centrado */}
+          <div className="mb-14 text-center">
+            <ScrollReveal>
+              <p className="t-label !text-primary-foreground/80 mb-4">Pronto para ir?</p>
+            </ScrollReveal>
+            <h2 className="t-h1 text-primary-foreground mb-6 leading-none">
+              Garanta sua vaga em {pacote.titulo}
+              {pacote.periodo && <><br />— {pacote.periodo}.</>}
+              {!pacote.periodo && "."}
+            </h2>
+            <ScrollReveal delay={0.1}>
+              <p className="t-body-lg !text-primary-foreground/80 max-w-xl mx-auto">
+                {pacote.vagas ? `Grupo de ${pacote.vagas} pessoas.` : ""} Atendimento direto com Rodrigo. Vagas limitadas.
+              </p>
+            </ScrollReveal>
+          </div>
+
+          {/* Ticket centrado abaixo */}
+          <ScrollReveal delay={0.15} className="w-full max-w-[1000px] mx-auto">
+            <PricingTicket
+              titulo={pacote.titulo}
+              tipo={pacote.tipo}
+              destino={pacote.titulo}
+              periodo={pacote.periodo}
+              cidadePartida={pacote.cidadePartida ?? "São Paulo"}
+              partida={pacote.partida}
+              dias={pacote.dias}
+              vagas={pacote.vagas}
+              preco={pacote.preco}
+              precoSemAero={pacote.precoSemAero}
+              taxaServico={pacote.taxaServico}
+              politicaCancelamento={pacote.politicaCancelamento}
+              politicaReagendamento={pacote.politicaReagendamento}
+              incluso={pacote.incluso ?? []}
+            />
           </ScrollReveal>
+
         </div>
       </section>
 

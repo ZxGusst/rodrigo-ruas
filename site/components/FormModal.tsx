@@ -146,9 +146,10 @@ interface FormModalProps {
   isOpen:  boolean
   onClose: () => void
   pacote?: string
+  tipo?:   string   /* gruposDoRuas | assinadoByRuas | gruposBrasileiros */
 }
 
-export function FormModal({ config, isOpen, onClose, pacote }: FormModalProps) {
+export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const drawerRef  = useRef<HTMLDivElement>(null)
 
@@ -157,10 +158,16 @@ export function FormModal({ config, isOpen, onClose, pacote }: FormModalProps) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [errMsg, setErrMsg] = useState("")
 
-  /* Pré-preenche destino */
+  /* Pré-preenche programa e destino quando vem de uma página de pacote */
   useEffect(() => {
-    if (pacote) setValues(v => ({ ...v, destino: pacote }))
-  }, [pacote])
+    if (pacote || tipo) {
+      setValues(v => ({
+        ...v,
+        ...(pacote ? { destino: pacote } : {}),
+        ...(tipo   ? { destino_programa: tipo } : {}),
+      }))
+    }
+  }, [pacote, tipo])
 
   /* Animação de entrada/saída do drawer */
   useEffect(() => {

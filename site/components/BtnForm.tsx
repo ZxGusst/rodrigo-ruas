@@ -7,6 +7,7 @@ import { useForm } from "./FormProvider"
 interface BtnFormProps {
   children: string
   pacote?:  string
+  tipo?:    string   /* gruposDoRuas | assinadoByRuas | gruposBrasileiros */
   className?: string
   variant?: "primary" | "outline" | "inverted"
   stagger?: number
@@ -19,6 +20,7 @@ interface BtnFormProps {
 export function BtnForm({
   children,
   pacote,
+  tipo,
   className = "",
   variant = "primary",
   stagger = 0.014,
@@ -65,11 +67,11 @@ export function BtnForm({
 
   return (
     <button
-      onClick={() => openForm(pacote)}
+      onClick={() => openForm(pacote, tipo)}
       onMouseEnter={() => animate(1)}
       onMouseLeave={() => animate(-1)}
-      className={`inline-flex items-center gap-3 text-[16px] font-semibold
-                  px-7 py-3.5 rounded-full transition-all duration-200
+      className={`inline-flex items-center gap-3 text-[20px] font-semibold
+                  px-8 py-4 rounded-full transition-all duration-200
                   cursor-pointer ${variantCls} ${className}`}
     >
       <span ref={textRef} className="inline-flex items-end select-none">{chars}</span>

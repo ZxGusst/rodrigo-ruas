@@ -84,6 +84,51 @@ export const pacote = defineType({
     defineField({ name: "partida",  title: "Data de partida (ex: 04/10)",type: "string" }),
     defineField({ name: "vagas",    title: "Número de vagas",            type: "number" }),
     defineField({
+      name: "preco",
+      title: "Preço COM aéreo (R$/pessoa)",
+      type: "number",
+      description: "Pacote completo incluindo passagem aérea.",
+    }),
+    defineField({
+      name: "precoSemAero",
+      title: "Preço SEM aéreo (R$/pessoa)",
+      type: "number",
+      description: "Pacote terrestre sem passagem aérea.",
+    }),
+    defineField({
+      name: "taxaServico",
+      title: "Taxa de serviço (R$)",
+      type: "number",
+      description: "Taxas incluídas no preço. Aparece no breakdown.",
+    }),
+    defineField({
+      name: "cidadePartida",
+      title: "Cidade de partida",
+      type: "string",
+      initialValue: "São Paulo",
+    }),
+    defineField({
+      name: "politicaCancelamento",
+      title: "Política de cancelamento",
+      type: "string",
+      options: {
+        list: [
+          { title: "Não reembolsável",              value: "nao-reembolsavel"   },
+          { title: "50% de reembolso",               value: "50-reembolsavel"    },
+          { title: "Reembolso total (30+ dias antes)", value: "reembolsavel"     },
+        ],
+        layout: "radio",
+      },
+      initialValue: "nao-reembolsavel",
+    }),
+    defineField({
+      name: "politicaReagendamento",
+      title: "Taxa de reagendamento",
+      type: "string",
+      description: 'Ex: "R$ 500,00" ou "Gratuito até 60 dias antes"',
+      initialValue: "R$ 500,00",
+    }),
+    defineField({
       name: "continentes", title: "Continentes / Regiões",
       type: "array",
       of: [defineArrayMember({ type: "string" })],

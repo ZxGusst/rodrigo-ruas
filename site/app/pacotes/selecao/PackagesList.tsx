@@ -3,19 +3,97 @@
 import { useRef, useState, useEffect } from "react"
 import gsap from "gsap"
 import { TransitionLink, ImagePlaceholder } from "@/components/gsap"
-import { Clock } from "@phosphor-icons/react"
+import { Info } from "@phosphor-icons/react"
 import { getUnsplash } from "@/lib/unsplash"
+import { StatusBadge } from "@/components/StatusBadge"
 
 interface Pacote {
   _id: string
   titulo: string
   slug: string
+  tipo?: string | null
   badge?: string | null
   heroImage?: any
   periodo?: string
   dias?: number
   partida?: string
   descricaoCurta?: string
+}
+
+const TIPO_CONFIG: Record<string, { label: string; bg: string; text: string; desc: string }> = {
+  gruposDoRuas: {
+    label: "Grupo Ruas",
+    bg:    "#FFF9E6",
+    text:  "#7A5100",
+    desc:  "Rodrigo vai junto. Roteiro exclusivo com curadoria e presença pessoal dele do início ao fim.",
+  },
+  assinadoByRuas: {
+    label: "Assinado By Ruas",
+    bg:    "#E8F4FF",
+    text:  "#0A3D5C",
+    desc:  "Curadoria feita por Rodrigo — hotéis, roteiro e experiências —mas ele não vai junto. Privativo, sai quando você quiser.",
+  },
+  gruposBrasileiros: {
+    label: "Grupo Brasileiro",
+    bg:    "#E8FFF2",
+    text:  "#0A4A2A",
+    desc:  "Grupo organizado com guia bilíngue (PT/ES). Rodrigo não vai junto. Datas fixas, preços acessíveis.",
+  },
+}
+
+function TipoBadge({ tipo }: { tipo: string }) {
+  const config  = TIPO_CONFIG[tipo]
+  const tipRef  = useRef<HTMLSpanElement>(null)
+
+  if (!config) return null
+
+  const show = () => {
+    if (!tipRef.current) return
+    gsap.killTweensOf(tipRef.current)
+    gsap.fromTo(tipRef.current,
+      { opacity: 0, y: 6, pointerEvents: "none" },
+      { opacity: 1, y: 0, duration: 0.2, ease: "power2.out",
+        onStart() { if (tipRef.current) tipRef.current.style.pointerEvents = "none" } }
+    )
+  }
+
+  const hide = () => {
+    if (!tipRef.current) return
+    gsap.killTweensOf(tipRef.current)
+    gsap.to(tipRef.current, { opacity: 0, y: 6, duration: 0.15, ease: "power2.in" })
+  }
+
+  return (
+    <span className="relative inline-flex items-center gap-1.5 shrink-0 self-center">
+      <span
+        className="inline-flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full cursor-default select-none"
+        style={{ background: config.bg, color: config.text }}
+      >
+        {config.label}
+        <span
+          onMouseEnter={show}
+          onMouseLeave={hide}
+          onClick={e => { e.preventDefault(); e.stopPropagation() }}
+          className="opacity-60 hover:opacity-100 transition-opacity cursor-default"
+          role="button"
+          aria-label="O que é isso?"
+        >
+          <Info size={14} weight="fill" />
+        </span>
+      </span>
+
+      <span
+        ref={tipRef}
+        className="absolute left-0 bottom-full mb-2 z-50 w-64 rounded-xl shadow-2xl px-4 py-3 text-[14px] leading-snug font-medium"
+        style={{ background: config.bg, color: config.text, opacity: 0, pointerEvents: "none" }}
+      >
+        {config.desc}
+        <span className="absolute left-4 top-full w-0 h-0"
+              style={{ borderLeft: "6px solid transparent", borderRight: "6px solid transparent",
+                       borderTop: `6px solid ${config.bg}` }} />
+      </span>
+    </span>
+  )
 }
 
 function getImageUrl(heroImage: any): string | null {
@@ -31,7 +109,7 @@ export function PackagesList({ pacotes }: { pacotes: Pacote[] }) {
   const bgRefsMap = useRef<Record<string, HTMLDivElement | null>>({})
   const itemRefsMap = useRef<Record<string, HTMLDivElement | null>>({})
 
-  /* inicializa — o primeiro item começa visível */
+  /* inicializa — o primeiro item come�a vis�vel */
   useEffect(() => {
     if (!pacotes.length) return
     Object.entries(bgRefsMap.current).forEach(([id, el]) => {
@@ -75,9 +153,10 @@ export function PackagesList({ pacotes }: { pacotes: Pacote[] }) {
     /* full-screen dark container */
     <div
       className="relative min-h-screen bg-[#060F18] text-white overflow-hidden"
+      data-cursor-theme="dark"
       onMouseLeave={handleLeaveAll}
     >
-      {/* ── Backgrounds empilhados, um visível por vez ──── */}
+      {/* ── Backgrounds empilhados, um vis�vel por vez ──── */}
       {pacotes.map(p => {
         const imgUrl = getImageUrl(p.heroImage)
         return (
@@ -98,75 +177,80 @@ export function PackagesList({ pacotes }: { pacotes: Pacote[] }) {
       })}
 
       {/* Overlay escuro por cima das imagens */}
-      {/* Gradiente: fundo mais pesado (texto legível), topo mais leve (imagem visível) */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#060F18]/80 via-[#060F18]/50 to-[#060F18]/25" />
+      {/* Gradiente: fundo mais pesado (texto leg�vel), topo mais leve (imagem vis�vel) */}
+      {/* overlay base — imagem bem escura */}
+      <div className="absolute inset-0 z-[1] bg-black/70" />
+      {/* gradiente extra no rodapé para o texto da lista */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#060F18]/90 via-transparent to-transparent pointer-events-none" />
 
       {/* ── Lista de itens ────────────────────────────── */}
       <div className="relative z-[2] pt-32 pb-24 px-[clamp(24px,5vw,80px)]">
         {pacotes.map((p, i) => {
-          const isActive = p._id === activeId
+          const isActive    = p._id === activeId
+          const isEsgotado  = p.badge === "esgotado"
+          const Wrapper     = isEsgotado ? "div" : TransitionLink
+          const wrapperProps = isEsgotado ? {} : { href: `/pacotes/${p.slug}` }
+
           return (
-            <TransitionLink key={p._id} href={`/pacotes/${p.slug}`}>
+            <Wrapper key={p._id} {...(wrapperProps as any)}>
               <div
                 ref={el => { itemRefsMap.current[p._id] = el }}
-                className="group flex items-baseline gap-5 py-3 cursor-none
-                           border-b border-white/8 hover:border-white/20 transition-colors"
-                onMouseEnter={() => handleEnter(p._id)}
+                className={`group flex items-baseline gap-5 py-3
+                            border-b border-white/8 transition-colors
+                            ${isEsgotado
+                              ? "opacity-45 cursor-default"
+                              : "cursor-none hover:border-white/20"}`}
+                onMouseEnter={() => !isEsgotado && handleEnter(p._id)}
               >
-                {/* Número */}
-                <span className="text-[13px] text-white/30 tabular-nums w-10 shrink-0 pt-1">
+                {/* N�mero */}
+                <span className="text-[20px] text-white/20 tabular-nums w-10 shrink-0 pt-1">
                   — {String(i + 1).padStart(2, "0")}
                 </span>
 
-                {/* Nome */}
-                <span
-                  className="font-bold leading-none tracking-tight transition-colors duration-200"
-                  style={{
-                    fontSize: "clamp(36px, 5.5vw, 80px)",
-                    color: isActive ? "#FAFAF8" : "rgba(255,255,255,0.7)",
-                  }}
-                >
-                  {p.titulo}
-                </span>
+                {/* Nome + badge de tipo */}
+                <div className="flex items-baseline gap-4 flex-1 min-w-0">
+                  <span
+                    className="font-bold leading-none tracking-tight transition-colors duration-200 shrink-0"
+                    style={{
+                      fontSize: "clamp(36px, 5.5vw, 80px)",
+                      color: isActive && !isEsgotado ? "#FFFFFF" : "rgba(255,255,255,0.33)",
+                    }}
+                  >
+                    {p.titulo}
+                  </span>
+                  {p.tipo && <TipoBadge tipo={p.tipo} />}
+                </div>
 
-                {/* Descrição — aparece só no item ativo */}
-                {isActive && p.descricaoCurta && (
-                  <span className="hidden lg:block text-[12px] font-medium tracking-[0.12em]
-                                   uppercase text-white/50 max-w-xs leading-tight self-center ml-2">
+                {/* Descri��o — aparece s� no item ativo */}
+                {isActive && !isEsgotado && p.descricaoCurta && (
+                  <span className="hidden lg:block text-[20px] font-medium tracking-[0.1em]
+                                   uppercase text-white/75 max-w-xs leading-tight self-center ml-2">
                     {p.descricaoCurta}
                   </span>
                 )}
 
-                {/* Info secundária */}
+                {/* Info secund�ria */}
                 <div className="ml-auto flex items-center gap-5 shrink-0 pb-1">
                   {p.periodo && (
-                    <span className="text-[13px] text-white/40 hidden md:block">{p.periodo}</span>
+                    <span className="text-[20px] text-white/80 hidden md:block">{p.periodo}</span>
                   )}
                   {p.dias && (
-                    <span className="text-[13px] text-white/40 hidden md:block">{p.dias} dias</span>
+                    <span className="text-[20px] text-white/80 hidden md:block">{p.dias} dias</span>
                   )}
-                  {p.badge && (
-                    <span className={`text-[11px] font-bold uppercase tracking-wide
-                                     px-2.5 py-1 rounded-full flex items-center gap-1
-                                     ${p.badge === "vagas"
-                                       ? "bg-warning/20 text-warning"
-                                       : "bg-white/10 text-white/50"}`}>
-                      <Clock size={9} weight="bold" />
-                      {p.badge === "vagas" ? "Últimas vagas" : "Esgotado"}
-                    </span>
-                  )}
+                  {p.badge && <StatusBadge badge={p.badge} />}
                 </div>
               </div>
-            </TransitionLink>
+            </Wrapper>
           )
         })}
 
         {pacotes.length === 0 && (
-          <p className="text-white/40 py-20 text-center">
-            Nenhum pacote disponível no momento.
+          <p className="text-white/70 py-20 text-center text-[20px]">
+            Nenhum pacote dispon�vel no momento.
           </p>
         )}
       </div>
     </div>
   )
 }
+

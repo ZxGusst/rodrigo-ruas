@@ -3,20 +3,16 @@
 import { useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { usePathname } from "next/navigation"
 import { TransitionLink } from "./TransitionLink"
 import { useForm } from "@/components/FormProvider"
+import { DestinosModal } from "@/components/DestinosModal"
 
 gsap.registerPlugin(ScrollTrigger)
 
-const links = [
-  { label: "Pacotes",  href: "/pacotes/selecao" },
-  { label: "Destinos", href: "#destinos" },
-  { label: "Sobre",    href: "#sobre"    },
-  { label: "Contato",  href: "#contato"  },
-]
-
 export function NavBar() {
-  const navRef = useRef<HTMLElement>(null)
+  const navRef   = useRef<HTMLElement>(null)
+  const pathname = usePathname()
   const { openForm } = useForm()
 
   useEffect(() => {
@@ -59,6 +55,8 @@ export function NavBar() {
           transition: width 0.3s ease;
         }
         .nav-link:hover::after { width: 100%; }
+        .nav-link[aria-current="page"]::after { width: 100%; }
+        .nav-link[aria-current="page"] { color: hsl(209 57% 12%); }
       `}</style>
 
       <nav
@@ -70,34 +68,33 @@ export function NavBar() {
         {/* Logo */}
         <a href="/" className="flex flex-col leading-tight group">
           <span className="text-xl font-bold tracking-tight text-foreground">RR VIAGENS</span>
-          <span className="text-[12px] tracking-[0.1em] text-foreground-subtle uppercase">
+          <span className="text-[14px] tracking-[0.1em] text-foreground-subtle uppercase">
             Pacotes pelo Mundo
           </span>
         </a>
 
-        {/* Links — sem FlipText, hover simples e claro */}
+        {/* Links */}
         <ul className="hidden md:flex items-center gap-10 list-none">
-          {links.map(({ label, href }) => (
-            <li key={label}>
-              {href.startsWith("/") ? (
+          <li><DestinosModal /></li>
+          {[
+            { label: "Grupos", href: "/pacotes/selecao" },
+            { label: "Sobre",  href: "/sobre"           },
+            { label: "Contato", href: "/contato"        },
+          ].map(({ label, href }) => {
+            const isActive = pathname === href || pathname.startsWith(href + "/")
+            return (
+              <li key={label}>
                 <TransitionLink
                   href={href}
-                  className="nav-link text-[16px] font-medium text-foreground-muted
-                             hover:text-foreground transition-colors duration-200"
+                  aria-current={isActive ? "page" : undefined}
+                  className={`nav-link text-[20px] font-medium transition-colors duration-200
+                              ${isActive ? "text-foreground" : "text-foreground-muted hover:text-foreground"}`}
                 >
                   {label}
                 </TransitionLink>
-              ) : (
-                <a
-                  href={href}
-                  className="nav-link text-[16px] font-medium text-foreground-muted
-                             hover:text-foreground transition-colors duration-200"
-                >
-                  {label}
-                </a>
-              )}
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
 
         {/* CTA — abre o formulário */}
@@ -105,7 +102,7 @@ export function NavBar() {
           onClick={() => openForm()}
           className="hidden md:inline-flex items-center gap-3
                      bg-primary text-primary-foreground
-                     text-[16px] font-semibold
+                     text-[20px] font-semibold
                      px-7 py-3.5 rounded-full
                      hover:opacity-90 transition-opacity cursor-pointer"
         >

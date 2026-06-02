@@ -30,8 +30,8 @@ export function FloatingWhatsApp() {
       className="fixed bottom-6 right-6 z-50
                  inline-flex items-center gap-3
                  bg-primary text-primary-foreground
-                 text-[16px] font-semibold
-                 px-7 py-3.5 rounded-full
+                 text-[20px] font-semibold
+                 px-8 py-4 rounded-full
                  shadow-xl hover:opacity-90
                  transition-opacity"
     >

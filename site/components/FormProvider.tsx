@@ -5,7 +5,7 @@ import { FormModal } from "./FormModal"
 
 /* ─── Context ────────────────────────────────────────────── */
 interface FormContextValue {
-  openForm: (pacote?: string) => void
+  openForm: (pacote?: string, tipo?: string) => void
   closeForm: () => void
 }
 
@@ -28,8 +28,9 @@ interface FormProviderProps {
 export function FormProvider({ children, formConfig }: FormProviderProps) {
   const [isOpen,  setIsOpen]  = useState(false)
   const [pacote,  setPacote]  = useState<string | undefined>()
+  const [tipo,    setTipo]    = useState<string | undefined>()
 
-  const openForm  = (p?: string) => { setPacote(p); setIsOpen(true)  }
+  const openForm  = (p?: string, t?: string) => { setPacote(p); setTipo(t); setIsOpen(true) }
   const closeForm = ()           => setIsOpen(false)
 
   /* Fallback se o Sanity não tiver formulário configurado ainda */
@@ -65,6 +66,7 @@ export function FormProvider({ children, formConfig }: FormProviderProps) {
         isOpen={isOpen}
         onClose={closeForm}
         pacote={pacote}
+        tipo={tipo}
       />
     </FormContext.Provider>
   )

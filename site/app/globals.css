@@ -165,6 +165,11 @@
     color: hsl(var(--foreground));
     letter-spacing: -0.02em;
     line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
@@ -214,29 +219,29 @@
   }
 
   .t-body-lg {
-    font-size: clamp(18px, 1.5vw, 22px);
+    font-size: clamp(20px, 1.5vw, 24px);
     font-weight: 400;
     line-height: 1.8;
     color: hsl(var(--foreground-muted));
   }
 
   .t-body {
-    font-size: clamp(17px, 1.3vw, 20px);
+    font-size: clamp(20px, 1.3vw, 22px);
     font-weight: 400;
     line-height: 1.8;
     color: hsl(var(--foreground-muted));
   }
 
   .t-small {
-    font-size: 15px;
+    font-size: 20px;
     color: hsl(var(--foreground-subtle));
     line-height: 1.6;
   }
 
   .t-label {
-    font-size: 13px;
+    font-size: 20px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: hsl(var(--foreground-subtle));
   }
