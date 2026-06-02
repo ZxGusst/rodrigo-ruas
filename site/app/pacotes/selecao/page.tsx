@@ -3,8 +3,7 @@ import { groq } from "next-sanity"
 import { NavBar, MagneticCursor, TransitionLink } from "@/components/gsap"
 import { BtnForm } from "@/components/BtnForm"
 import { PackagesList } from "./PackagesList"
-import { FilterBar } from "./FilterBar"
-import { PriceCalculator } from "./PriceCalculator"
+import { FilterPanel } from "./FilterPanel"
 import { Suspense } from "react"
 
 export const revalidate = 60
@@ -54,11 +53,8 @@ export default async function PacotesSelecionPage({
         <BtnForm variant="inverted">Falar no WhatsApp</BtnForm>
       </div>
 
-      {/* Filtros */}
-      <Suspense>
-        <FilterBar />
-        <PriceCalculator />
-      </Suspense>
+      {/* Filtros — painel expansível */}
+      <FilterPanel />
 
       {/* Lista full-screen */}
       <PackagesList pacotes={filtrados} />

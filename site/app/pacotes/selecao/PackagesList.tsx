@@ -144,6 +144,42 @@ export function PackagesList({ pacotes }: { pacotes: Pacote[] }) {
     })
   }
 
+  /* ── IntersectionObserver: ativa item central no scroll (mobile/touch) ── */
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches
+    if (!isTouchDevice) return   /* só em touch */
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestEntry: IntersectionObserverEntry | null = null
+        entries.forEach(entry => {
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio)
+            bestEntry = entry
+        })
+        if (bestEntry && (bestEntry as IntersectionObserverEntry).isIntersecting) {
+          const el    = (bestEntry as IntersectionObserverEntry).target as HTMLElement
+          const id    = el.dataset.itemId
+          const isEsg = el.dataset.esgotado === "true"
+          if (id && !isEsg) handleEnter(id)
+        }
+      },
+      { threshold: [0.4, 0.6, 0.8], rootMargin: "-15% 0px -15% 0px" }
+    )
+
+    pacotes.forEach(p => {
+      const el = itemRefsMap.current[p._id]
+      if (el) {
+        el.dataset.itemId    = p._id
+        el.dataset.esgotado  = String(p.badge === "esgotado")
+        observer.observe(el)
+      }
+    })
+
+    return () => observer.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pacotes])
+
   return (
     /* full-screen dark container */
     <div
