@@ -8,12 +8,12 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react"
 gsap.registerPlugin(ScrollTrigger)
 
 const SLIDES = [
-  { src: "https://images.unsplash.com/photo-aqZ3UAjs_M4?w=1920&q=85&fm=webp&fit=crop", alt: "Japão" },
-  { src: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=85&fm=webp&fit=crop", alt: "Ushuaia" },
-  { src: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1920&q=85&fm=webp&fit=crop", alt: "Turquia" },
-  { src: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1920&q=85&fm=webp&fit=crop", alt: "China" },
-  { src: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=1920&q=85&fm=webp&fit=crop", alt: "Grécia" },
-  { src: "https://images.unsplash.com/photo-1586861203927-800a5acdcc4d?w=1920&q=85&fm=webp&fit=crop", alt: "Sri Lanka" },
+  { src: "/imgs/japao.jpg",    alt: "Japão"    },
+  { src: "/imgs/turquia.jpg",  alt: "Turquia"  },
+  { src: "/imgs/grecia.jpg",   alt: "Grécia"   },
+  { src: "/imgs/china.jpg",    alt: "China"    },
+  { src: "/imgs/coreia.jpg",   alt: "Coreia"   },
+  { src: "/imgs/alemanha.jpg", alt: "Alemanha" },
 ]
 
 const INTERVAL = 5000
