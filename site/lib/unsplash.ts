@@ -18,8 +18,8 @@ export const UNSPLASH: Record<string, string> = {
   alemanha:       `${BASE}/photo-1467269204594-9661b134dd2b?w=1200&q=80&fm=webp&fit=crop`,
 
   /* ── Novos destinos ─────────────────────────────────── */
-  ushuaia:        `${BASE}/photo-1501854140801-50d01698950b?w=1200&q=80&fm=webp&fit=crop`,
-  patagonia:      `${BASE}/photo-1501854140801-50d01698950b?w=1200&q=80&fm=webp&fit=crop`,
+  ushuaia:        `${BASE}/photo-1517736996303-4b1c7b4e4b5d?w=1200&q=80&fm=webp&fit=crop`,
+  patagonia:      `${BASE}/photo-1517736996303-4b1c7b4e4b5d?w=1200&q=80&fm=webp&fit=crop`,
   china:          `${BASE}/photo-1547036967-23d11aacaee0?w=1200&q=80&fm=webp&fit=crop`,
   srilanka:       `${BASE}/photo-1586861203927-800a5acdcc4d?w=1200&q=80&fm=webp&fit=crop`,
   maldivas:       `${BASE}/photo-1514282401047-d79a71a590e8?w=1200&q=80&fm=webp&fit=crop`,

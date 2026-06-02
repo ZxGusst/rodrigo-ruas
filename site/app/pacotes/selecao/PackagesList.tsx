@@ -64,27 +64,22 @@ function TipoBadge({ tipo }: { tipo: string }) {
   }
 
   return (
-    <span className="relative inline-flex items-center gap-1.5 shrink-0 self-center">
+    <span
+      className="relative inline-flex items-center gap-1.5 shrink-0 self-center"
+      onMouseEnter={show}
+      onMouseLeave={hide}
+    >
       <span
         className="inline-flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full cursor-default select-none"
         style={{ background: config.bg, color: config.text }}
       >
         {config.label}
-        <span
-          onMouseEnter={show}
-          onMouseLeave={hide}
-          onClick={e => { e.preventDefault(); e.stopPropagation() }}
-          className="opacity-60 hover:opacity-100 transition-opacity cursor-default"
-          role="button"
-          aria-label="O que é isso?"
-        >
-          <Info size={14} weight="fill" />
-        </span>
+        <Info size={14} weight="fill" style={{ opacity: 0.6 }} />
       </span>
 
       <span
         ref={tipRef}
-        className="absolute left-0 bottom-full mb-2 z-50 w-64 rounded-xl shadow-2xl px-4 py-3 text-[14px] leading-snug font-medium"
+        className="absolute left-0 bottom-full mb-2 z-50 w-72 rounded-xl shadow-2xl px-5 py-4 text-[17px] leading-snug font-medium"
         style={{ background: config.bg, color: config.text, opacity: 0, pointerEvents: "none" }}
       >
         {config.desc}
