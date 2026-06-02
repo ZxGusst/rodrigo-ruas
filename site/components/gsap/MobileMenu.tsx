@@ -82,15 +82,15 @@ export function MobileMenu() {
       </div>
 
       {/* Links grandes — ocupa a parte central/inferior */}
-      <ul ref={linksRef} className="flex flex-col justify-end flex-1 gap-0 pb-6">
+      <ul ref={linksRef} className="flex flex-col justify-end flex-1 gap-3 pb-6">
         {LINKS.map(({ label, href }) => (
           <li key={label}>
             <TransitionLink
               href={href}
               onClick={() => setOpen(false)}
-              className="block text-white font-bold uppercase leading-[0.9] tracking-tight
+              className="block text-white font-black uppercase leading-none tracking-tight
                          hover:text-white/40 transition-colors duration-200"
-              style={{ fontSize: "clamp(58px, 17vw, 88px)", letterSpacing: "-0.02em" }}
+              style={{ fontSize: "clamp(72px, 22vw, 110px)", letterSpacing: "-0.03em" }}
             >
               {label}
             </TransitionLink>
