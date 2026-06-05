@@ -41,7 +41,7 @@ export function FilterPanel() {
         </button>
         {!open && (
           <p className="text-[15px] text-white/40">
-            Continente · Preço
+            Continente · Tipo · Preço
           </p>
         )}
       </div>

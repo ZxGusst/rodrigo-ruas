@@ -119,6 +119,13 @@ function ProgramaDestinoField({
   )
 }
 
+/* Mapa: valor interno do tipo → label legível no select */
+const TIPO_LABEL: Record<string, string> = {
+  gruposDoRuas:      "Grupo do Ruas",
+  assinadoByRuas:    "Pacotes Assinados",
+  gruposBrasileiros: "Grupos Brasileiros",
+}
+
 interface Campo {
   tipo: "input" | "email" | "phone" | "textarea" | "select" | "programa-destino"
   label: string
@@ -158,16 +165,33 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [errMsg, setErrMsg] = useState("")
 
-  /* Pré-preenche programa e destino quando vem de uma página de pacote */
+  /* Pré-preenche produto/programa/destino quando vem de uma página de pacote */
   useEffect(() => {
     if (pacote || tipo) {
       setValues(v => ({
         ...v,
         ...(pacote ? { destino: pacote } : {}),
-        ...(tipo   ? { destino_programa: tipo } : {}),
+        ...(tipo   ? {
+          destino_programa: tipo,
+          tipo_produto: TIPO_LABEL[tipo] ?? "",
+        } : {}),
       }))
     }
   }, [pacote, tipo])
+
+  /* Auto-fill por URL: lê ?tipo= da URL quando o form abre sem prop explícita */
+  useEffect(() => {
+    if (!isOpen || tipo) return
+    const urlTipo = new URLSearchParams(window.location.search).get("tipo") ?? ""
+    if (urlTipo && TIPO_LABEL[urlTipo]) {
+      setValues(v => ({
+        ...v,
+        destino_programa: urlTipo,
+        tipo_produto:     TIPO_LABEL[urlTipo],
+      }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
 
   /* Animação de entrada/saída do drawer */
   useEffect(() => {

@@ -41,9 +41,16 @@ export function FormProvider({ children, formConfig }: FormProviderProps) {
     mensagemSucesso: "Recebemos seus dados! Entraremos em contato em breve.",
     textoBotao:      "Quero ser contatado",
     campos: [
-      { tipo: "input", label: "Seu nome",  nome: "nome",     placeholder: "João Silva",       obrigatorio: true  },
-      { tipo: "phone", label: "WhatsApp",  nome: "telefone", placeholder: "(11) 9 9999-9999", obrigatorio: true  },
-      { tipo: "email", label: "E-mail",    nome: "email",    placeholder: "joao@email.com",   obrigatorio: false },
+      { tipo: "input",  label: "Seu nome", nome: "nome",     placeholder: "João Silva",       obrigatorio: true  },
+      { tipo: "phone",  label: "WhatsApp", nome: "telefone", placeholder: "(11) 9 9999-9999", obrigatorio: true  },
+      { tipo: "email",  label: "E-mail",   nome: "email",    placeholder: "joao@email.com",   obrigatorio: false },
+      {
+        tipo: "select",
+        label: "Qual produto te interessa?",
+        nome: "tipo_produto",
+        obrigatorio: false,
+        opcoes: ["Grupo do Ruas", "Pacotes Assinados", "Grupos Brasileiros"],
+      },
       {
         tipo: "programa-destino",
         label: "Programa de interesse",

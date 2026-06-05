@@ -28,17 +28,18 @@ const QUERY = groq`
 export default async function PacotesSelecionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ continente?: string; precoMax?: string }>
+  searchParams: Promise<{ continente?: string; precoMax?: string; tipo?: string }>
 }) {
   let pacotes: any[] = []
   try { pacotes = await client.fetch(QUERY) } catch {}
 
-  const { continente, precoMax } = await searchParams
+  const { continente, precoMax, tipo } = await searchParams
   const maxPreco = Number(precoMax ?? 0)
 
   const filtrados = pacotes
     .filter(p => !continente || p.continentes?.includes(continente))
-    .filter(p => !maxPreco || !p.preco || p.preco <= maxPreco)
+    .filter(p => !maxPreco   || !p.preco || p.preco <= maxPreco)
+    .filter(p => !tipo       || p.tipo === tipo)
 
   return (
     <main data-page-content className="bg-[#060F18] text-white overflow-x-clip">
