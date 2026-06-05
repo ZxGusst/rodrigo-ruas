@@ -194,8 +194,8 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
     try {
       const payload = {
         ...values,
-        programa,
-        destinos: [...checked].join(", ") || "Não especificado",
+        destino_programa: programa,
+        destino: [...checked].join(", ") || "Não especificado",
         ...(config.webhookUrl ? { _webhookUrl: config.webhookUrl } : {}),
       }
 
