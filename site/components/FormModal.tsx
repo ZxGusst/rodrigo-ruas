@@ -69,7 +69,12 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   const [step, setStep] = useState<1 | 2 | 3>(1)
 
   /* ── Step 1: dados pessoais ─────────────────────────────────── */
-  const personalCampos = config.campos.filter(c => c.tipo !== "programa-destino")
+  /* Remove campos já cobertos pelos steps 2 e 3 */
+  const personalCampos = config.campos.filter(c =>
+    c.tipo !== "programa-destino" &&
+    c.nome !== "destino" &&
+    c.nome !== "destino_programa"
+  )
   const [values, setValues] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
 
