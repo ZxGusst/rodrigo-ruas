@@ -52,23 +52,69 @@ export function GuiaDoc() {
           Cada entrada em <strong>Pacotes</strong> vira uma página no site (ex: /pacotes/japao) e aparece
           na lista de destinos. Para criar: clique em "Pacotes" no menu lateral → "Criar novo".
         </p>
-        <Field name="Título"         desc="Nome do destino que aparece na lista e na página. Ex: Japão, Grécia + Turquia." />
-        <Field name="Slug"           desc="URL da página. Gerado automaticamente a partir do título. Só altere se souber o que está fazendo." />
-        <Field name="Tipo"           desc="Categoria do pacote: Grupo do Ruas (Rodrigo vai junto), Assinado By Ruas (curadoria sem Rodrigo) ou Grupo Brasileiro (grupo organizado com guia). Aparece como badge colorido na lista." />
-        <Field name="Badge"          desc="Status de disponibilidade: Vagas limitadas (aviso amarelo) ou Esgotado (pacote fica opaco e sem link)." />
-        <Field name="Imagem hero"    desc="Foto principal do destino. Use imagens em paisagem (16:9). Recomendado: mínimo 1600px de largura." />
-        <Field name="Período"        desc="Texto livre da data. Ex: Out 2026, Nov/Dez 2026, Qualquer data." />
-        <Field name="Duração (dias)" desc="Número de dias da viagem. Aparece como '11 dias' na lista." />
-        <Field name="Partida"        desc="Cidade de saída. Ex: São Paulo. Aparece como 'Partida São Paulo'." />
+        <Field name="Título"          desc="Nome do destino que aparece na lista e na página. Ex: Japão, Grécia + Turquia." />
+        <Field name="Slug"            desc="URL da página. Gerado automaticamente a partir do título. Só altere se souber o que está fazendo." />
+        <Field name="Tipo"            desc="Categoria do pacote: Grupo do Ruas (Rodrigo vai junto), Assinado By Ruas (curadoria sem Rodrigo) ou Grupo Brasileiro (grupo organizado com guia). Controla: (1) badge colorido na lista, (2) filtro por tipo na página de destinos, (3) quais pacotes aparecem no formulário de contato quando o lead escolhe o programa." />
+        <Field name="Badge"           desc="Status de disponibilidade: Vagas limitadas (aviso amarelo) ou Esgotado (pacote fica opaco e sem link)." />
+        <Field name="Imagem hero"     desc="Foto principal do destino. Use imagens em paisagem (16:9). Recomendado: mínimo 1600px de largura." />
+        <Field name="Período"         desc="Texto livre da data. Ex: Out 2026, Nov/Dez 2026, Qualquer data." />
+        <Field name="Duração (dias)"  desc="Número de dias da viagem. Aparece como '11 dias' na lista." />
+        <Field name="Partida"         desc="Cidade de saída. Ex: São Paulo. Aparece como 'Partida São Paulo'." />
         <Field name="Descrição curta" desc="Frase de 1-2 linhas que resume o roteiro. Aparece na lista quando o destino está selecionado." />
         <Field name="Descrição longa" desc="Texto completo da página do pacote (suporta formatação)." />
-        <Field name="Continentes"    desc="Usado para o filtro por região na lista. Selecione um ou mais." />
-        <Field name="Preço (R$)"     desc="Valor a partir de. Usado no filtro de preço máximo." />
-        <Field name="Prioridade"     desc="Controla a visibilidade: Normal (aparece), Destaque (fica no topo), Oculto (some do site sem apagar)." />
-        <Field name="Ordem"          desc="Número de ordenação. Menor número aparece primeiro na lista." />
+        <Field name="Continentes"     desc="Usado para o filtro por região na lista. Selecione um ou mais." />
+        <Field name="Preço (R$)"      desc="Valor a partir de. Usado no filtro de preço máximo." />
+        <Field name="Prioridade"      desc="Controla a visibilidade na homepage: Destaque (card grande no topo), Carrossel (rolagem lateral), Oculto (some da homepage mas continua na lista de destinos)." />
+        <Field name="Ordem"           desc="Número de ordenação. Menor número aparece primeiro na lista." />
         <Note>
           Para ocultar temporariamente um pacote sem apagar, mude <code style={{ color: "#a5f3fc" }}>Prioridade</code> para <strong>Oculto</strong>.
           Para marcar como esgotado, use o campo <code style={{ color: "#a5f3fc" }}>Badge</code> → Esgotado.
+        </Note>
+      </Section>
+
+      {/* FORMULÁRIO */}
+      <Section title="Formulário de Contato">
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", marginBottom: 20 }}>
+          O formulário funciona em <strong>3 etapas</strong> guiadas. O lead preenche os dados,
+          escolhe o programa e seleciona os destinos — tudo num único fluxo visual.
+        </p>
+
+        {/* Etapas */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+          {[
+            ["Etapa 1 — Dados de contato", "Campos configuráveis aqui no Sanity: nome, WhatsApp, e-mail e qualquer outro campo customizado."],
+            ["Etapa 2 — Programa",         "Seleção do tipo de viagem com card e descrição: Grupo do Ruas, Pacotes Assinados ou Grupos Brasileiros. Configurável no campo 'Programas' abaixo."],
+            ["Etapa 3 — Destino",          "Checkboxes carregados automaticamente do CMS com base no programa escolhido na etapa anterior. Nenhuma configuração necessária — basta cadastrar os pacotes com o Tipo correto."],
+          ].map(([step, desc]) => (
+            <div key={step} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 8,
+                                     padding: "14px 18px", borderLeft: "3px solid rgba(249,115,22,0.4)" }}>
+              <strong style={{ fontSize: 14, display: "block", marginBottom: 4, color: "#f97316" }}>
+                {step}
+              </strong>
+              <span style={{ fontSize: 14, color: "rgba(255,255,255,0.65)" }}>{desc}</span>
+            </div>
+          ))}
+        </div>
+
+        <Field name="Título"           desc="Texto de abertura exibido no topo do drawer. Ex: Quero conhecer os pacotes." />
+        <Field name="Descrição"        desc="Subtítulo abaixo do título. Ex: Preencha os dados e nossa equipe entra em contato em até 1 hora." />
+        <Field name="URL do Webhook"   desc="Endpoint BotConversa que recebe os dados do formulário. Obrigatório para o envio funcionar." />
+        <Field name="Mensagem sucesso" desc="Texto exibido após o envio bem-sucedido." />
+        <Field name="Campos"           desc="Campos da Etapa 1. Adicione apenas dados de contato (nome, telefone, e-mail). Não adicione campo de destino — isso é gerenciado automaticamente pelas Etapas 2 e 3." />
+
+        <Note>
+          <strong>Payload enviado ao webhook (nomes fixos, não alterar):</strong>
+          {" "}<code style={{ color: "#a5f3fc" }}>nome</code>,{" "}
+          <code style={{ color: "#a5f3fc" }}>telefone</code>,{" "}
+          <code style={{ color: "#a5f3fc" }}>email</code>,{" "}
+          <code style={{ color: "#a5f3fc" }}>destino_programa</code> (ex: gruposDoRuas),{" "}
+          <code style={{ color: "#a5f3fc" }}>destino</code> (ex: Japão, Ushuaia).
+          Os campos de destino são preenchidos automaticamente pelo fluxo — não precisa configurar no Sanity.
+        </Note>
+        <Note>
+          Quando o lead acessa a página de um pacote e clica em "Quero este pacote", o formulário abre
+          com o <strong>programa pré-selecionado</strong> e o <strong>destino pré-marcado</strong>
+          {" "}automaticamente. O lead só precisa confirmar os dados de contato.
         </Note>
       </Section>
 
