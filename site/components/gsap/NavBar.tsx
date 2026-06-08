@@ -77,11 +77,12 @@ export function NavBar() {
         <ul className="hidden md:flex items-center gap-10 list-none">
           <li><DestinosModal /></li>
           {[
-            { label: "Grupos", href: "/pacotes/selecao" },
+            { label: "Grupos", href: "/pacotes/selecao?tipo=gruposBrasileiros" },
             { label: "Sobre",  href: "/sobre"           },
             { label: "Contato", href: "/contato"        },
           ].map(({ label, href }) => {
-            const isActive = pathname === href || pathname.startsWith(href + "/")
+            const hrefPath = href.split("?")[0]
+            const isActive = pathname === hrefPath || pathname.startsWith(hrefPath + "/")
             return (
               <li key={label}>
                 <TransitionLink

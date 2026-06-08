@@ -9,7 +9,7 @@ import { useForm } from "@/components/FormProvider"
 
 const LINKS = [
   { label: "Destinos",  href: "/pacotes/selecao" },
-  { label: "Grupos",    href: "/pacotes/selecao"  },
+  { label: "Grupos",    href: "/pacotes/selecao?tipo=gruposBrasileiros" },
   { label: "Sobre",     href: "/sobre"            },
   { label: "Contato",   href: "/contato"          },
 ]
