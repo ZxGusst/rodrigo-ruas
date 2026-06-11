@@ -60,6 +60,32 @@ const PROGRAMAS: Programa[] = [
 
 const STEP_LABELS = ["Seus dados", "Programa", "Destino"]
 
+/* ── DDI ────────────────────────────────────────────────────── */
+const DDI_COUNTRIES = [
+  { flag: "🇧🇷", label: "BR",  ddi: "55"  },
+  { flag: "🇺🇸", label: "US",  ddi: "1"   },
+  { flag: "🇵🇹", label: "PT",  ddi: "351" },
+  { flag: "🇦🇷", label: "AR",  ddi: "54"  },
+  { flag: "🇺🇾", label: "UY",  ddi: "598" },
+  { flag: "🇨🇴", label: "CO",  ddi: "57"  },
+  { flag: "🇨🇱", label: "CL",  ddi: "56"  },
+  { flag: "🇵🇾", label: "PY",  ddi: "595" },
+  { flag: "🇩🇪", label: "DE",  ddi: "49"  },
+  { flag: "🇪🇸", label: "ES",  ddi: "34"  },
+  { flag: "🇮🇹", label: "IT",  ddi: "39"  },
+  { flag: "🇫🇷", label: "FR",  ddi: "33"  },
+  { flag: "🇬🇧", label: "GB",  ddi: "44"  },
+  { flag: "🇦🇺", label: "AU",  ddi: "61"  },
+]
+
+function phoneMask(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 11)
+  if (digits.length <=  2) return digits
+  if (digits.length <=  6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+  if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
+}
+
 /* ── Componente principal ───────────────────────────────────── */
 export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -77,6 +103,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   )
   const [values, setValues] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [ddi,    setDdi]    = useState("55")
 
   /* ── Step 2: programa ───────────────────────────────────────── */
   const programas: Programa[] =
@@ -155,6 +182,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
           setStep(1)
           setValues({})
           setErrors({})
+          setDdi("55")
           setPrograma("")
           setChecked(new Set())
           setStatus("idle")
@@ -167,10 +195,16 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   function validateStep1() {
     const newErrors: Record<string, string> = {}
     for (const campo of personalCampos) {
-      if (campo.obrigatorio && !values[campo.nome]?.trim())
+      const val = values[campo.nome]?.trim() ?? ""
+      if (campo.obrigatorio && !val)
         newErrors[campo.nome] = `${campo.label} é obrigatório`
-      if (campo.tipo === "email" && values[campo.nome] && !/\S+@\S+\.\S+/.test(values[campo.nome]))
+      if (campo.tipo === "email" && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
         newErrors[campo.nome] = "E-mail inválido"
+      if (campo.tipo === "phone" && val) {
+        const digits = val.replace(/\D/g, "")
+        if (digits.length < 10)
+          newErrors[campo.nome] = "Número inválido — informe DDD + número"
+      }
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -197,8 +231,17 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   async function handleSubmit() {
     setStatus("loading")
     try {
+      /* Prefixa DDI nos campos de telefone */
+      const enrichedValues = { ...values }
+      for (const campo of personalCampos) {
+        if (campo.tipo === "phone" && enrichedValues[campo.nome]) {
+          const digits = enrichedValues[campo.nome].replace(/\D/g, "")
+          enrichedValues[campo.nome] = `+${ddi}${digits}`
+        }
+      }
+
       const payload = {
-        ...values,
+        ...enrichedValues,
         destino_programa: programa,
         destino: [...checked].join(", ") || "Não especificado",
         ...(config.webhookUrl ? { _webhookUrl: config.webhookUrl } : {}),
@@ -438,9 +481,41 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
                     </select>
                   )}
 
-                  {!["textarea", "select"].includes(campo.tipo) && (
+                  {/* Phone: seletor DDI + input mascarado */}
+                  {campo.tipo === "phone" && (
+                    <div className="flex gap-2">
+                      <select
+                        value={ddi}
+                        onChange={e => setDdi(e.target.value)}
+                        className="bg-white/[0.04] border border-white/10 rounded-lg
+                                   px-3 py-3.5 text-[15px] text-white
+                                   focus:outline-none focus:border-white/30 transition-colors
+                                   shrink-0 cursor-pointer"
+                        style={{ appearance: "none", WebkitAppearance: "none" }}
+                        title="Selecionar país"
+                      >
+                        {DDI_COUNTRIES.map(c => (
+                          <option key={c.ddi + c.label} value={c.ddi}
+                                  style={{ color: "#0D1F30", background: "#fff" }}>
+                            {c.flag} {c.label} +{c.ddi}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        type="tel"
+                        placeholder="(11) 99999-9999"
+                        inputMode="numeric"
+                        value={values[campo.nome] ?? ""}
+                        onChange={e => setValues(v => ({ ...v, [campo.nome]: phoneMask(e.target.value) }))}
+                        className={inputBase}
+                      />
+                    </div>
+                  )}
+
+                  {/* Outros tipos (text, email, input) */}
+                  {!["textarea", "select", "phone"].includes(campo.tipo) && (
                     <input
-                      type={campo.tipo === "email" ? "email" : campo.tipo === "phone" ? "tel" : "text"}
+                      type={campo.tipo === "email" ? "email" : "text"}
                       placeholder={campo.placeholder}
                       value={values[campo.nome] ?? ""}
                       onChange={e => setValues(v => ({ ...v, [campo.nome]: e.target.value }))}
