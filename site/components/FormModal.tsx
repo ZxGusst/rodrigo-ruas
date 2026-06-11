@@ -78,6 +78,10 @@ const DDI_COUNTRIES = [
   { flag: "🇦🇺", label: "AU",  ddi: "61"  },
 ]
 
+function isPhoneCampo(campo: Campo): boolean {
+  return campo.tipo === "phone" || /telefone|whatsapp|celular|phone|fone/i.test(campo.nome)
+}
+
 function phoneMask(raw: string): string {
   const digits = raw.replace(/\D/g, "").slice(0, 11)
   if (digits.length <=  2) return digits
@@ -200,7 +204,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
         newErrors[campo.nome] = `${campo.label} é obrigatório`
       if (campo.tipo === "email" && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
         newErrors[campo.nome] = "E-mail inválido"
-      if (campo.tipo === "phone" && val) {
+      if (isPhoneCampo(campo) && val) {
         const digits = val.replace(/\D/g, "")
         if (digits.length < 10)
           newErrors[campo.nome] = "Número inválido — informe DDD + número"
@@ -234,7 +238,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
       /* Prefixa DDI nos campos de telefone */
       const enrichedValues = { ...values }
       for (const campo of personalCampos) {
-        if (campo.tipo === "phone" && enrichedValues[campo.nome]) {
+        if (isPhoneCampo(campo) && enrichedValues[campo.nome]) {
           const digits = enrichedValues[campo.nome].replace(/\D/g, "")
           enrichedValues[campo.nome] = `+${ddi}${digits}`
         }
@@ -482,7 +486,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
                   )}
 
                   {/* Phone: seletor DDI + input mascarado */}
-                  {campo.tipo === "phone" && (
+                  {isPhoneCampo(campo) && (
                     <div className="flex gap-2">
                       <select
                         value={ddi}
@@ -513,7 +517,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
                   )}
 
                   {/* Outros tipos (text, email, input) */}
-                  {!["textarea", "select", "phone"].includes(campo.tipo) && (
+                  {!["textarea", "select"].includes(campo.tipo) && !isPhoneCampo(campo) && (
                     <input
                       type={campo.tipo === "email" ? "email" : "text"}
                       placeholder={campo.placeholder}
