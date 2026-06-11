@@ -5,19 +5,17 @@ import { FORMULARIO_QUERY } from "@/sanity/lib/queries"
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { _webhookUrl, ...dados } = body
 
-    /* 1. Tenta pegar a URL do Sanity (fonte confiável) */
+    /* Remove _webhookUrl do payload — nunca deve ser aceito do cliente */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _webhookUrl: _ignored, ...dados } = body
+
+    /* Webhook sempre vem do Sanity (fonte confiável — server side) */
     let webhookUrl: string | undefined
     try {
       const form = await client.fetch(FORMULARIO_QUERY)
       webhookUrl = form?.webhookUrl
     } catch { /* Sanity indisponível */ }
-
-    /* 2. Fallback: URL enviada pelo cliente (útil para testes) */
-    if (!webhookUrl && _webhookUrl) {
-      webhookUrl = _webhookUrl
-    }
 
     if (!webhookUrl || webhookUrl.includes("placeholder")) {
       return NextResponse.json(

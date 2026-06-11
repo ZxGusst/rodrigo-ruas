@@ -1,8 +1,16 @@
-const TOKEN = "skTMByodyxtOZHTjHhNJ0ZoGg81zpCQYsaWoeh2oteGTUMJqImOcSm2Gr2tnA0S06NbzF5PPvjCk7IOpk21lyvnf7SzBlNNuC8cUlgR954RzL6TgqcFaPi9lahIpKdaclOyJwWBYikxglc6pLn4PTBxEJIGLmM2ScD83p8lnA0I5Dj5biLKT"
-const PROJECT = "6g3tj20r"
-const DATASET = "production"
+// Script de teste do token Sanity
+// Use: SANITY_TOKEN=sk... node scripts/test-token.mjs
 
-// Testa via HTTP direto (bypassa o SDK)
+const TOKEN   = process.env.SANITY_TOKEN
+const PROJECT = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "6g3tj20r"
+const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET    ?? "production"
+
+if (!TOKEN) {
+  console.error("❌ Variável SANITY_TOKEN não definida.")
+  console.error("   Use: SANITY_TOKEN=sk... node scripts/test-token.mjs")
+  process.exit(1)
+}
+
 const res = await fetch(
   `https://${PROJECT}.api.sanity.io/v2024-01-01/data/mutate/${DATASET}`,
   {
@@ -11,7 +19,6 @@ const res = await fetch(
       "Content-Type": "application/json",
       "Authorization": `Bearer ${TOKEN}`,
     },
-    /* tenta createOrReplace com _id explícito como draft */
     body: JSON.stringify({
       mutations: [{ createOrReplace: { _id: "drafts.seed-test-001", _type: "pacote", titulo: "__test__", slug: { _type:"slug", current:"__httptest__" }, prioridade:"oculto", ordem:999 } }]
     })

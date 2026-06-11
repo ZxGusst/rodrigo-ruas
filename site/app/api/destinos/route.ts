@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { client } from "@/sanity/lib/client"
 import { groq } from "next-sanity"
 
+const TIPOS_VALIDOS = new Set(["all", "gruposDoRuas", "assinadoByRuas", "gruposBrasileiros"])
+
 /* Retorna todos os pacotes de um tipo específico, incluindo esgotados */
 const QUERY = groq`
   *[_type == "pacote" && (
@@ -18,6 +20,11 @@ const QUERY = groq`
 
 export async function GET(req: NextRequest) {
   const tipo = req.nextUrl.searchParams.get("tipo") ?? "all"
+
+  if (!TIPOS_VALIDOS.has(tipo)) {
+    return NextResponse.json({ error: "Tipo inválido" }, { status: 400 })
+  }
+
   try {
     const destinos = await client.fetch(QUERY, { tipo })
     return NextResponse.json(destinos ?? [])

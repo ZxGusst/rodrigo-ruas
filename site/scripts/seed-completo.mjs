@@ -9,11 +9,17 @@
  */
 import { createClient } from "@sanity/client"
 
+if (!process.env.SANITY_TOKEN) {
+  console.error("❌ Variável SANITY_TOKEN não definida.")
+  console.error("   Use: SANITY_TOKEN=sk... node scripts/seed-completo.mjs")
+  process.exit(1)
+}
+
 const client = createClient({
-  projectId: "6g3tj20r",
-  dataset:   "production",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "6g3tj20r",
+  dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET    ?? "production",
   apiVersion: "2024-01-01",
-  token: process.env.SANITY_TOKEN || "skTMByodyxtOZHTjHhNJ0ZoGg81zpCQYsaWoeh2oteGTUMJqImOcSm2Gr2tnA0S06NbzF5PPvjCk7IOpk21lyvnf7SzBlNNuC8cUlgR954RzL6TgqcFaPi9lahIpKdaclOyJwWBYikxglc6pLn4PTBxEJIGLmM2ScD83p8lnA0I5Dj5biLKT",
+  token: process.env.SANITY_TOKEN,
   useCdn: false,
 })
 

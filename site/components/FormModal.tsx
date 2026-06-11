@@ -214,7 +214,6 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
         ...values,
         destino_programa: programa,
         destino: [...checked].join(", ") || "Não especificado",
-        ...(config.webhookUrl ? { _webhookUrl: config.webhookUrl } : {}),
       }
 
       const res = await fetch("/api/submit-form", {
