@@ -176,7 +176,8 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
       const val = values[campo.nome]?.trim() ?? ""
       if (campo.obrigatorio && !val)
         newErrors[campo.nome] = `${campo.label} é obrigatório`
-      if (campo.tipo === "email" && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
+      const isEmail = campo.tipo === "email" || campo.nome.toLowerCase().includes("email") || campo.nome.toLowerCase().includes("e-mail")
+      if (isEmail && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
         newErrors[campo.nome] = "E-mail inválido"
       if (isPhoneCampo(campo) && val) {
         /* PhoneInput retorna +DDIXXXXXXXXXX — mínimo 10 dígitos totais */
@@ -494,7 +495,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
                   {/* Outros tipos (text, email, input) */}
                   {!["textarea", "select"].includes(campo.tipo) && !isPhoneCampo(campo) && (
                     <input
-                      type={campo.tipo === "email" ? "email" : "text"}
+                      type={campo.tipo === "email" || campo.nome.toLowerCase().includes("email") ? "email" : "text"}
                       placeholder={campo.placeholder}
                       value={values[campo.nome] ?? ""}
                       onChange={e => setValues(v => ({ ...v, [campo.nome]: e.target.value }))}
