@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
 import { X, CheckCircle, WarningCircle, ArrowLeft, Check } from "@phosphor-icons/react"
+import { PhoneInput } from "react-international-phone"
+import "react-international-phone/style.css"
 import { urlFor } from "@/sanity/lib/image"
 
 /* ── Types ─────────────────────────────────────────────────── */
@@ -60,34 +62,8 @@ const PROGRAMAS: Programa[] = [
 
 const STEP_LABELS = ["Seus dados", "Programa", "Destino"]
 
-/* ── DDI ────────────────────────────────────────────────────── */
-const DDI_COUNTRIES = [
-  { flag: "🇧🇷", label: "BR",  ddi: "55"  },
-  { flag: "🇺🇸", label: "US",  ddi: "1"   },
-  { flag: "🇵🇹", label: "PT",  ddi: "351" },
-  { flag: "🇦🇷", label: "AR",  ddi: "54"  },
-  { flag: "🇺🇾", label: "UY",  ddi: "598" },
-  { flag: "🇨🇴", label: "CO",  ddi: "57"  },
-  { flag: "🇨🇱", label: "CL",  ddi: "56"  },
-  { flag: "🇵🇾", label: "PY",  ddi: "595" },
-  { flag: "🇩🇪", label: "DE",  ddi: "49"  },
-  { flag: "🇪🇸", label: "ES",  ddi: "34"  },
-  { flag: "🇮🇹", label: "IT",  ddi: "39"  },
-  { flag: "🇫🇷", label: "FR",  ddi: "33"  },
-  { flag: "🇬🇧", label: "GB",  ddi: "44"  },
-  { flag: "🇦🇺", label: "AU",  ddi: "61"  },
-]
-
 function isPhoneCampo(campo: Campo): boolean {
   return campo.tipo === "phone" || /telefone|whatsapp|celular|phone|fone/i.test(campo.nome)
-}
-
-function phoneMask(raw: string): string {
-  const digits = raw.replace(/\D/g, "").slice(0, 11)
-  if (digits.length <=  2) return digits
-  if (digits.length <=  6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
-  if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
 /* ── Componente principal ───────────────────────────────────── */
@@ -107,7 +83,6 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   )
   const [values, setValues] = useState<Record<string, string>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [ddi,    setDdi]    = useState("55")
 
   /* ── Step 2: programa ───────────────────────────────────────── */
   const programas: Programa[] =
@@ -186,7 +161,6 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
           setStep(1)
           setValues({})
           setErrors({})
-          setDdi("55")
           setPrograma("")
           setChecked(new Set())
           setStatus("idle")
@@ -205,6 +179,7 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
       if (campo.tipo === "email" && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val))
         newErrors[campo.nome] = "E-mail inválido"
       if (isPhoneCampo(campo) && val) {
+        /* PhoneInput retorna +DDIXXXXXXXXXX — mínimo 10 dígitos totais */
         const digits = val.replace(/\D/g, "")
         if (digits.length < 10)
           newErrors[campo.nome] = "Número inválido — informe DDD + número"
@@ -235,17 +210,8 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
   async function handleSubmit() {
     setStatus("loading")
     try {
-      /* Prefixa DDI nos campos de telefone */
-      const enrichedValues = { ...values }
-      for (const campo of personalCampos) {
-        if (isPhoneCampo(campo) && enrichedValues[campo.nome]) {
-          const digits = enrichedValues[campo.nome].replace(/\D/g, "")
-          enrichedValues[campo.nome] = `+${ddi}${digits}`
-        }
-      }
-
       const payload = {
-        ...enrichedValues,
+        ...values,
         destino_programa: programa,
         destino: [...checked].join(", ") || "Não especificado",
         ...(config.webhookUrl ? { _webhookUrl: config.webhookUrl } : {}),
@@ -485,35 +451,45 @@ export function FormModal({ config, isOpen, onClose, pacote, tipo }: FormModalPr
                     </select>
                   )}
 
-                  {/* Phone: seletor DDI + input mascarado */}
+                  {/* Phone: react-international-phone */}
                   {isPhoneCampo(campo) && (
-                    <div className="flex gap-2">
-                      <select
-                        value={ddi}
-                        onChange={e => setDdi(e.target.value)}
-                        className="bg-white/[0.04] border border-white/10 rounded-lg
-                                   px-3 py-3.5 text-[15px] text-white
-                                   focus:outline-none focus:border-white/30 transition-colors
-                                   shrink-0 cursor-pointer"
-                        style={{ appearance: "none", WebkitAppearance: "none" }}
-                        title="Selecionar país"
-                      >
-                        {DDI_COUNTRIES.map(c => (
-                          <option key={c.ddi + c.label} value={c.ddi}
-                                  style={{ color: "#0D1F30", background: "#fff" }}>
-                            {c.flag} {c.label} +{c.ddi}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="tel"
-                        placeholder="(11) 99999-9999"
-                        inputMode="numeric"
-                        value={values[campo.nome] ?? ""}
-                        onChange={e => setValues(v => ({ ...v, [campo.nome]: phoneMask(e.target.value) }))}
-                        className={inputBase}
-                      />
-                    </div>
+                    <PhoneInput
+                      defaultCountry="br"
+                      value={values[campo.nome] ?? ""}
+                      onChange={phone => setValues(v => ({ ...v, [campo.nome]: phone }))}
+                      style={{ width: "100%" }}
+                      inputStyle={{
+                        flex: 1,
+                        width: "100%",
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderLeft: "none",
+                        borderRadius: "0 8px 8px 0",
+                        color: "white",
+                        fontSize: "16px",
+                        padding: "14px 16px",
+                        outline: "none",
+                      }}
+                      countrySelectorStyleProps={{
+                        buttonStyle: {
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          borderRight: "none",
+                          borderRadius: "8px 0 0 8px",
+                          padding: "0 12px",
+                          height: "100%",
+                        },
+                        dropdownStyleProps: {
+                          style: {
+                            background: "#0D1A26",
+                            border: "1px solid rgba(255,255,255,0.12)",
+                            borderRadius: "8px",
+                            color: "white",
+                            zIndex: 9999,
+                          },
+                        },
+                      }}
+                    />
                   )}
 
                   {/* Outros tipos (text, email, input) */}
