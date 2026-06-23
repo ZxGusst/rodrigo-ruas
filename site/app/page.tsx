@@ -135,6 +135,7 @@ export default async function Home() {
         line1={copy.heroLine1}
         line2={copy.heroLine2}
         sub={copy.heroSub}
+        slides={cms?.heroSlides ?? []}
       />
 
       {/* �� DIVIDER ���������������������������������������� */}
@@ -334,7 +335,7 @@ export default async function Home() {
             <RevealImage direction="up" className="overflow-hidden group"
                          data-cursor="expand" data-cursor-label="RODRIGO">
               <div className="w-full transition-transform duration-700 group-hover:scale-[1.04]">
-                <img src={UNSPLASH.rodrigo} alt="Rodrigo Ruas"
+                <img src={cms?.rodrigoFotoUrl ?? UNSPLASH.rodrigo} alt="Rodrigo Ruas"
                      className="w-full aspect-[3/4] max-w-xs mx-auto lg:mx-0 object-cover" loading="lazy" />
               </div>
             </RevealImage>

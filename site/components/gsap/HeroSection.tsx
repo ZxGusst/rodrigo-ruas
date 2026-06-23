@@ -21,18 +21,21 @@ const INTERVAL = 5000
 const FADE     = 0.9
 
 interface HeroSectionProps {
-  label?: string
+  label?:  string
   line1?:  string
   line2?:  string
   sub?:    string
+  slides?: { src: string; alt: string }[]
 }
 
 export function HeroSection({
-  label = "Curadoria de Expert",
-  line1 = "PACOTES",
-  line2 = "PELO MUNDO",
-  sub   = "Curadoria de expert para viajantes exigentes.\n93 países. 19 anos de estrada.",
+  label  = "Curadoria de Expert",
+  line1  = "PACOTES",
+  line2  = "PELO MUNDO",
+  sub    = "Curadoria de expert para viajantes exigentes.\n93 países. 19 anos de estrada.",
+  slides,
 }: HeroSectionProps) {
+  const slideData = (slides && slides.length > 0) ? slides : SLIDES
   const [active, setActive] = useState(0)
   const imgRefs   = useRef<(HTMLDivElement | null)[]>([])
   const timerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -58,10 +61,10 @@ export function HeroSection({
   /* auto-play */
   useEffect(() => {
     timerRef.current = setTimeout(() => {
-      goTo((active + 1) % SLIDES.length)
+      goTo((active + 1) % slideData.length)
     }, INTERVAL)
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [active, goTo])
+  }, [active, goTo, slideData.length])
 
   /* inicializa opacidades */
   useEffect(() => {
@@ -87,14 +90,14 @@ export function HeroSection({
     return () => { tl.kill() }
   }, [])
 
-  const prev = () => { clearTimeout(timerRef.current!); goTo((active - 1 + SLIDES.length) % SLIDES.length) }
-  const next = () => { clearTimeout(timerRef.current!); goTo((active + 1) % SLIDES.length) }
+  const prev = () => { clearTimeout(timerRef.current!); goTo((active - 1 + slideData.length) % slideData.length) }
+  const next = () => { clearTimeout(timerRef.current!); goTo((active + 1) % slideData.length) }
 
   return (
     <section className="relative min-h-screen overflow-hidden flex flex-col" data-cursor-theme="dark">
 
       {/* ── Imagens do carrossel ─────────────────────── */}
-      {SLIDES.map((slide, i) => (
+      {slideData.map((slide, i) => (
         <div
           key={i}
           ref={el => { imgRefs.current[i] = el }}
@@ -173,7 +176,7 @@ export function HeroSection({
 
               {/* Dots */}
               <div className="flex items-center gap-2">
-                {SLIDES.map((_, i) => (
+                {slideData.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => { clearTimeout(timerRef.current!); goTo(i) }}
@@ -197,7 +200,7 @@ export function HeroSection({
 
       {/* Dots mobile — centrados no bottom */}
       <div className="relative z-[2] flex md:hidden justify-center gap-2 pb-8">
-        {SLIDES.map((_, i) => (
+        {slideData.map((_, i) => (
           <button key={i} onClick={() => { clearTimeout(timerRef.current!); goTo(i) }}
                   aria-label={`Slide ${i + 1}`}>
             <span className={`block rounded-full transition-all duration-300 ${

@@ -153,6 +153,44 @@ export const homepage = defineType({
       type: "text", rows: 2,
       initialValue: "Vagas limitadas. Atendimento personalizado. Sem chatbot, sem fila.",
     }),
+
+    /* ── IMAGENS ESTÁTICAS ────────────────────────── */
+    defineField({
+      name: "heroSlides",
+      title: "Hero — slides do carrossel",
+      type: "array",
+      description: "Imagens do carrossel principal. Deixe vazio para usar as imagens padrão.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "slide",
+          fields: [
+            defineField({
+              name: "imagem", title: "Imagem",
+              type: "image", options: { hotspot: true },
+            }),
+            defineField({
+              name: "alt", title: "Destino / Legenda",
+              type: "string",
+              description: 'Ex: "Japão"',
+            }),
+          ],
+          preview: {
+            select: { media: "imagem", title: "alt" },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            prepare: (s: any) => ({ title: s.title ?? "Slide", media: s.media }),
+          },
+        }),
+      ],
+    }),
+
+    defineField({
+      name: "rodrigoFoto",
+      title: "Foto do Rodrigo",
+      type: "image",
+      description: "Foto de Rodrigo Ruas (seção \"Quem é Rodrigo\"). Deixe vazio para usar a padrão.",
+      options: { hotspot: true },
+    }),
   ],
 
   preview: {

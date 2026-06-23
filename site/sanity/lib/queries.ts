@@ -78,6 +78,11 @@ export const HOMEPAGE_CONTENT_QUERY = groq`
     secaoGruposLabel, secaoGruposTitulo, secaoGruposDesc,
     secaoAssinadosLabel, secaoAssinadosTitulo, secaoAssinadosDesc,
     secaoGruposBrLabel, secaoGruposBrTitulo, secaoGruposBrDesc,
+    "heroSlides": heroSlides[] {
+      "src": imagem.asset->url + "?w=1920&fit=crop&fm=webp&q=80",
+      alt,
+    },
+    "rodrigoFotoUrl": rodrigoFoto.asset->url + "?w=900&fit=crop&fm=webp&q=85",
   }
 `
 
