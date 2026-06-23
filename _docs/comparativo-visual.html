@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RR Viagens — Comparativo Visual · Antes × Depois</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #FAFAF8;
+    --dark:      #1C1C1A;
+    --accent:    #C4A882;
+    --muted:     #717167;
+    --border:    #E8E4DF;
+    --old-bg:    #1a2744;
+    --old-nav:   #162038;
+    --red:       #C0392B;
+    --green:     #27AE60;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── CAPA ─────────────────────────────── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 40px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 60%, rgba(196,168,130,0.18) 0%, transparent 70%);
+  }
+  .cover-eyebrow {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px; position: relative;
+  }
+  .cover h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 300; line-height: 1.1;
+    color: #FAFAF8; margin-bottom: 24px; position: relative;
+  }
+  .cover h1 em { font-style: italic; color: var(--accent); }
+  .cover-sub {
+    font-size: 16px; color: rgba(250,250,248,.55);
+    max-width: 520px; position: relative;
+  }
+  .cover-divider {
+    width: 60px; height: 1px; background: var(--accent);
+    margin: 40px auto; position: relative;
+  }
+  .cover-meta {
+    font-size: 12px; color: rgba(250,250,248,.3);
+    letter-spacing: 0.08em; text-transform: uppercase; position: relative;
+  }
+
+  /* ── LAYOUT GERAL ───────────────────────── */
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── SECTION INTRO ──────────────────────── */
+  .section-intro {
+    padding: 100px 0 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 80px;
+  }
+  .section-intro .eyebrow {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .section-intro h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4vw, 54px);
+    font-weight: 300; line-height: 1.15; margin-bottom: 20px;
+  }
+  .section-intro p {
+    color: var(--muted); max-width: 580px; margin: 0 auto; font-size: 16px;
+  }
+
+  /* ── COMPARAÇÃO ─────────────────────────── */
+  .comparison-block {
+    margin-bottom: 120px;
+  }
+  .comparison-label {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+  }
+  .comparison-label .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: var(--border);
+    line-height: 1;
+  }
+  .comparison-label .title-group .eyebrow {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .comparison-label .title-group h3 {
+    font-size: 24px; font-weight: 500; line-height: 1.2;
+  }
+
+  .screens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: start;
+  }
+
+  .screen-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .screen-label {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+    background: white;
+  }
+  .screen-label.old { background: #f8f0f0; }
+  .screen-label.new { background: #f0f6f0; }
+  .screen-label .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .screen-label.old .dot { background: var(--red); }
+  .screen-label.new .dot { background: var(--green); }
+  .screen-label.old { color: #8B2020; }
+  .screen-label.new { color: #1a6b3c; }
+
+  .screen-content {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+  }
+
+  /* ── MOCKS DO SITE ANTIGO ────────────────── */
+
+  /* mock: navbar antiga */
+  .old-nav {
+    background: #162038;
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .old-nav .logo { color: #ccc; font-size: 13px; letter-spacing: 0.05em; font-weight: 400; }
+  .old-nav .links { display: flex; gap: 14px; }
+  .old-nav .links a {
+    color: #8899bb; font-size: 10px; text-decoration: none;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .old-nav .links a.active { color: #ccc; }
+
+  /* mock: hero antigo */
+  .old-hero {
+    background: #1a2744;
+    padding: 30px 20px;
+    text-align: center;
+    min-height: 320px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .old-hero .tagline {
+    color: #8899bb; font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .old-hero .cards { display: flex; flex-direction: column; gap: 12px; width: 60%; max-width: 280px; }
+  .old-hero .card {
+    background: #243050; border-radius: 4px; overflow: hidden;
+    position: relative;
+  }
+  .old-hero .card img-ph {
+    display: block; width: 100%; height: 80px;
+    background: linear-gradient(135deg, #2a3d6e 0%, #1e2f56 100%);
+  }
+  .old-hero .card-photo {
+    width: 100%; height: 80px; object-fit: cover;
+    background: #2a3d6e;
+  }
+  .old-hero .card-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(15,25,50,0.45);
+  }
+  .old-hero .card-overlay .card-title {
+    color: white; font-size: 9px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px;
+  }
+  .old-hero .card-overlay .card-sub {
+    color: rgba(255,255,255,0.6); font-size: 7px; letter-spacing: 0.08em;
+  }
+
+  /* card colored fills for old site */
+  .card-c1 { background: linear-gradient(135deg, #4a6741, #2d4027); }
+  .card-c2 { background: linear-gradient(135deg, #1e5a7a, #123650); }
+  .card-c3 { background: linear-gradient(135deg, #6b4a28, #3e2b17); }
+  .card-c4 { background: linear-gradient(135deg, #4a3a6b, #2d2242); }
+
+  /* ── MOCKS DO SITE NOVO ──────────────────── */
+
+  /* nav nova */
+  .new-nav {
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .new-nav .logo {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--dark);
+  }
+  .new-nav .links { display: flex; gap: 20px; }
+  .new-nav .links a {
+    color: var(--muted); font-size: 11px; text-decoration: none;
+  }
+  .new-nav .cta {
+    background: var(--dark); color: white;
+    font-size: 10px; padding: 8px 14px; border-radius: 100px;
+    font-weight: 500;
+  }
+
+  /* hero novo */
+  .new-hero {
+    position: relative; min-height: 360px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 28px 20px;
+    overflow: hidden;
+  }
+  .hero-photo-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #6b4e2c 0%, #3a2a18 30%, #1a2030 60%, #0d1520 100%);
+  }
+  .hero-photo-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 30%, rgba(10,15,25,0.7) 100%);
+  }
+  .new-hero .badge {
+    position: absolute; top: 14px; left: 20px; right: 20px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    z-index: 1;
+  }
+  .new-hero .badge-label {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(250,250,248,.7); font-weight: 500;
+  }
+  .new-hero .badge-right {
+    text-align: right;
+  }
+  .new-hero .badge-right .name {
+    font-size: 11px; color: rgba(250,250,248,.85); font-weight: 500;
+  }
+  .new-hero .badge-right .countries {
+    font-size: 9px; color: rgba(250,250,248,.5);
+  }
+  .new-hero .hero-text { position: relative; z-index: 1; }
+  .new-hero .hero-text h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 7vw, 54px); font-weight: 300; line-height: 1;
+    color: white; text-transform: uppercase; letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .new-hero .hero-text p {
+    font-size: 11px; color: rgba(250,250,248,.7); line-height: 1.5;
+  }
+  .hero-dots {
+    position: absolute; bottom: 14px; right: 20px; z-index: 1;
+    display: flex; gap: 4px;
+  }
+  .hero-dots span {
+    width: 18px; height: 2px; background: rgba(255,255,255,.3); border-radius: 2px;
+  }
+  .hero-dots span:first-child { background: white; }
+
+  /* pacotes */
+  .new-pacotes {
+    padding: 20px;
+    background: white;
+  }
+  .new-pacotes .eyebrow {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .new-pacotes h2 {
+    font-size: 18px; font-weight: 500; margin-bottom: 16px; line-height: 1.2;
+  }
+  .cards-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .dest-card {
+    border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .dest-card .photo {
+    height: 100px; object-fit: cover;
+  }
+  .dest-card .photo.grecia { background: linear-gradient(135deg, #c9a96e, #8b6534, #6b4c28); }
+  .dest-card .photo.turquia { background: linear-gradient(135deg, #3a7bb5, #1a4d7a, #0d2e4d); }
+  .dest-card .photo.japao  { background: linear-gradient(135deg, #d4785c, #8b3020, #4a1810); }
+  .dest-card .photo.ushuaia{ background: linear-gradient(135deg, #5b8ac0, #2d5a8a, #0d2845); }
+  .dest-card .info { padding: 10px 12px; }
+  .dest-card .info .title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .dest-card .info .sub { font-size: 10px; color: var(--muted); }
+  .dest-card .info .btn {
+    display: inline-block; margin-top: 8px;
+    font-size: 9px; border: 1px solid var(--dark); border-radius: 100px;
+    padding: 4px 10px; color: var(--dark);
+  }
+
+  /* sobre novo */
+  .new-sobre {
+    padding: 28px 20px; background: white;
+  }
+  .new-sobre .eyebrow {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .new-sobre h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 400; line-height: 1.2; margin-bottom: 12px;
+  }
+  .new-sobre .photo {
+    width: 100%; height: 120px;
+    background: linear-gradient(135deg, #d4c4b0, #b8a48c);
+    border-radius: 8px; margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .person-silhouette {
+    width: 60px; height: 80px;
+    background: linear-gradient(180deg, #c8b49a 0%, #a89070 100%);
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    position: relative;
+  }
+  .new-sobre p { font-size: 11px; color: var(--muted); line-height: 1.7; }
+
+  /* sobre antigo */
+  .old-sobre { background: #1a2744; padding: 20px; }
+  .old-sobre-inner {
+    display: grid; grid-template-columns: 1fr 1.5fr; gap: 16px;
+  }
+  .old-sobre .photo {
+    height: 120px; background: linear-gradient(135deg, #3d5a8a, #243050);
+    border-radius: 4px;
+  }
+  .old-sobre .text-block h3 {
+    font-size: 14px; color: white; margin-bottom: 8px;
+  }
+  .old-sobre .text-block p {
+    font-size: 9px; color: #8899bb; line-height: 1.7;
+  }
+
+  /* processo novo */
+  .new-process {
+    padding: 24px 20px; background: white;
+  }
+  .new-process .eyebrow {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .new-process h2 { font-size: 18px; font-weight: 500; margin-bottom: 20px; }
+  .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .step .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; color: var(--border); line-height: 1; margin-bottom: 8px;
+  }
+  .step .step-title { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .step .step-desc { font-size: 9px; color: var(--muted); line-height: 1.5; }
+
+  /* stats novo */
+  .new-stats {
+    background: var(--dark); padding: 20px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;
+  }
+  .stat-item .big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 4px;
+  }
+  .stat-item .label {
+    font-size: 8px; color: rgba(250,250,248,.5); text-transform: uppercase;
+    letter-spacing: 0.1em; line-height: 1.4;
+  }
+
+  /* CTA novo */
+  .new-cta { padding: 24px 20px; background: white; text-align: center; }
+  .new-cta .eyebrow {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .new-cta h2 { font-size: 18px; font-weight: 500; line-height: 1.3; margin-bottom: 16px; }
+  .new-cta .cta-btn {
+    display: inline-block; background: var(--dark); color: white;
+    font-size: 11px; padding: 12px 24px; border-radius: 100px; font-weight: 500;
+  }
+  .new-cta .hint { font-size: 9px; color: var(--muted); margin-top: 8px; }
+
+  /* footer novo */
+  .new-footer {
+    background: var(--dark); padding: 20px;
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 16px;
+  }
+  .new-footer .logo { font-size: 12px; color: white; font-weight: 600; margin-bottom: 4px; }
+  .new-footer .tagline { font-size: 9px; color: rgba(250,250,248,.4); }
+  .new-footer .col-title { font-size: 9px; color: rgba(250,250,248,.4); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .new-footer .col-links { display: flex; flex-direction: column; gap: 4px; }
+  .new-footer .col-links a { font-size: 10px; color: rgba(250,250,248,.6); text-decoration: none; }
+  .new-footer .bottombar {
+    grid-column: 1 / -1; border-top: 1px solid rgba(250,250,248,.08);
+    padding-top: 12px; font-size: 9px; color: rgba(250,250,248,.3);
+    display: flex; justify-content: space-between;
+  }
+
+  /* footer antigo */
+  .old-footer { background: #162038; padding: 20px; }
+  .old-footer .logo { font-size: 13px; color: #ccc; margin-bottom: 8px; }
+  .old-footer .phone { font-size: 11px; color: #8899bb; margin-bottom: 16px; }
+  .old-footer .copy { font-size: 9px; color: #4a5c7a; }
+
+  /* ── ANOTAÇÕES ────────────────────────────── */
+  .annotation {
+    background: var(--dark);
+    border-radius: 12px;
+    padding: 28px 32px;
+    color: #FAFAF8;
+  }
+  .annotation h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 300; margin-bottom: 16px;
+    border-bottom: 1px solid rgba(250,250,248,.1); padding-bottom: 12px;
+  }
+  .annotation h4 em { font-style: italic; color: var(--accent); }
+  .reasons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .reason {
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .reason-icon {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(196,168,130,.15); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; margin-top: 2px;
+  }
+  .reason-text .r-title {
+    font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #FAFAF8;
+  }
+  .reason-text .r-desc {
+    font-size: 12px; color: rgba(250,250,248,.55); line-height: 1.5;
+  }
+
+  /* Destaque negativo/positivo */
+  .diff-badge {
+    display: inline-block; font-size: 9px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px; margin-right: 6px;
+  }
+  .diff-badge.neg { background: rgba(192,57,43,.15); color: #e74c3c; }
+  .diff-badge.pos { background: rgba(39,174,96,.15); color: #27ae60; }
+
+  /* ── SEÇÃO DE CONTEXTO ────────────────────── */
+  .context-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px 48px;
+    margin-bottom: 80px;
+  }
+  .context-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; margin-bottom: 24px;
+  }
+  .pillars {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+  }
+  .pillar {
+    padding: 24px; border: 1px solid var(--border); border-radius: 8px;
+  }
+  .pillar .p-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 300; color: var(--accent); margin-bottom: 8px; line-height: 1;
+  }
+  .pillar h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .pillar p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── RESULTADOS ESPERADOS ─────────────────── */
+  .results-section {
+    background: var(--dark); padding: 80px 0;
+    margin-bottom: 0;
+  }
+  .results-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300; color: #FAFAF8; text-align: center; margin-bottom: 16px;
+  }
+  .results-section .sub {
+    text-align: center; color: rgba(250,250,248,.5); margin-bottom: 56px; font-size: 15px;
+  }
+  .metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .metric-card {
+    background: rgba(250,250,248,.04); border: 1px solid rgba(250,250,248,.08);
+    border-radius: 12px; padding: 28px 24px; text-align: center;
+  }
+  .metric-card .m-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 8px;
+  }
+  .metric-card h4 { font-size: 14px; font-weight: 500; color: #FAFAF8; margin-bottom: 8px; }
+  .metric-card p { font-size: 12px; color: rgba(250,250,248,.45); line-height: 1.5; }
+
+  /* ── FOOTER DA APRESENTAÇÃO ──────────────── */
+  .pres-footer {
+    background: var(--dark); padding: 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(250,250,248,.06);
+  }
+  .pres-footer .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; color: var(--accent);
+  }
+  .pres-footer .copy { font-size: 12px; color: rgba(250,250,248,.3); }
+
+  /* ── DIVIDER ─────────────────────────────── */
+  .section-sep {
+    height: 1px; background: var(--border);
+    margin: 0 0 120px;
+  }
+
+  /* ── DETALHE AUSÊNCIA ─────────────────────── */
+  .absent {
+    background: #1a2744;
+    min-height: 160px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px; text-align: center;
+  }
+  .absent .x { font-size: 28px; color: rgba(136,153,187,.3); margin-bottom: 8px; }
+  .absent .msg { font-size: 11px; color: #8899bb; }
+
+  /* ── Testimunho mock ─────────────────────── */
+  .new-testimonial {
+    padding: 28px 20px; background: white; text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .new-testimonial .star { font-size: 14px; color: var(--accent); margin-bottom: 12px; }
+  .new-testimonial blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-style: italic; font-weight: 300;
+    line-height: 1.5; color: var(--dark); margin-bottom: 10px;
+  }
+  .new-testimonial cite {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    font-style: normal;
+  }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <div class="cover-eyebrow">RR Viagens × Análise Estratégica</div>
+  <h1>Antes <em>&</em> Depois<br>Cada decisão tem <em>razão de ser.</em></h1>
+  <p class="cover-sub">Uma análise visual seção por seção de como o novo site foi construído em torno do público e dos objetivos da marca.</p>
+  <div class="cover-divider"></div>
+  <p class="cover-meta">Design estratégico · RR Viagens · Junho 2026</p>
+</div>
+
+<!-- CONTEXTO ESTRATÉGICO -->
+<div style="padding: 100px 0 80px;">
+<div class="wrapper">
+  <div class="context-section">
+    <div class="eyebrow" style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">O ponto de partida</div>
+    <h2>Por que reprojetar tudo?</h2>
+    <p style="color:var(--muted);font-size:15px;max-width:600px;margin-bottom:36px;line-height:1.7;">Quatro pilares estratégicos guiaram cada escolha — do tamanho das fotos ao número de itens no menu. Nada foi feito por estética: tudo foi feito por conversão.</p>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-num">01</div>
+        <h3>Público 35–65 anos</h3>
+        <p>A maioria dos leads tem entre 35 e 65 anos. Esse público cresceu lendo revistas de viagem — Condé Nast, National Geographic. O novo site fala a língua visual deles: fotos grandes, tipografia legível, espaço para respirar.</p>
+      </div>
+      <div class="pillar">
+        <div class="p-num">02</div>
+        <h3>Sensação de revista premium</h3>
+        <p>Revistas não empilham conteúdo — elas editam. Uma foto double-spread. Um título grande. Uma ideia por página. O site foi projetado com essa lógica: cada seção tem um único foco, sem poluição visual.</p>
+      </div>
+      <div class="pillar">
+        <div class="p-num">03</div>
+        <h3>Navegação sem ambiguidade</h3>
+        <p>Menos opções = menos paralisia. O menu antigo tinha 6+ categorias geográficas que exigiam que o usuário soubesse onde queria ir. O novo tem 4 ações claras e o WhatsApp sempre visível.</p>
+      </div>
+      <div class="pillar">
+        <div class="p-num">04</div>
+        <h3>Lead mais qualificado</h3>
+        <p>O novo site explica o processo, exibe as credenciais e mostra depoimentos antes de pedir qualquer ação. Quem chega ao WhatsApp já sabe quem é o Rodrigo, o que inclui e quanto custa — chegando pronto para converter.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ COMPARAÇÕES ════════════ -->
+<div class="wrapper">
+
+  <!-- 01: HERO / ABOVE THE FOLD -->
+  <div class="comparison-block">
+    <div class="comparison-label">
+      <div class="num">01</div>
+      <div class="title-group">
+        <div class="eyebrow">Seção 01</div>
+        <h3>Hero — A primeira impressão</h3>
+      </div>
+    </div>
+
+    <div class="screens">
+      <!-- ANTIGO -->
+      <div class="screen-wrap">
+        <div class="screen-label old"><span class="dot"></span>Site antigo — pacotespelomundo.com.br</div>
+        <div class="screen-content">
+          <div class="old-nav">
+            <div class="logo">RR VIAGENS</div>
+            <div class="links">
+              <a class="active" href="#">Página inicial</a>
+              <a href="#">Quem Somos</a>
+              <a href="#">África</a>
+              <a href="#">América do Norte</a>
+              <a href="#">América do Sul</a>
+              <a href="#">Mais ▾</a>
+            </div>
+          </div>
+          <div class="old-hero">
+            <div class="tagline">PACOTES FEITOS POR UM VERDADEIRO EXPERT</div>
+            <div class="cards">
+              <div class="card">
+                <div class="card-photo card-c1"></div>
+                <div class="card-overlay">
+                  <div class="card-title">GRUPOS DO RUAS</div>
+                  <div class="card-sub">Com os maiores apresentadores do BR</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-photo card-c2"></div>
+                <div class="card-overlay">
+                  <div class="card-title">PACOTES ASSINADOS BY RUAS</div>
+                  <div class="card-sub">Viagens privativas · saídas a qualquer data</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-photo card-c3"></div>
+                <div class="card-overlay">
+                  <div class="card-title">GRUPOS DE BRASILEIROS</div>
+                  <div class="card-sub">Várias saídas durante o ano</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOVO -->
+      <div class="screen-wrap">
+        <div class="screen-label new"><span class="dot"></span>Site novo — redesign 2026</div>
+        <div class="screen-content">
+          <div class="new-nav">
+            <div class="logo">RR VIAGENS</div>
+            <div class="links">
+              <a href="#">Destinos ▾</a>
+              <a href="#">Grupos</a>
+              <a href="#">Sobre</a>
+              <a href="#">Contato</a>
+            </div>
+            <div class="cta">Falar no WhatsApp</div>
+          </div>
+          <div class="new-hero">
+            <div class="hero-photo-bg"></div>
+            <div class="badge">
+              <div class="badge-label">Curadoria Expert</div>
+              <div class="badge-right">
+                <div class="name">Rodrigo Ruas</div>
+                <div class="countries">93 países visitados</div>
+              </div>
+            </div>
+            <div class="hero-text">
+              <h1>PACOTES<br>PELO MUNDO</h1>
+              <p>Curadoria de expert para viajantes exigentes.<br>93 países. 19 anos de estrada.</p>
+            </div>
+            <div class="hero-dots">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <h4>Por que o <em>hero mudou completamente?</em></h4>
+      <div class="reasons">
+        <div class="reason">
+          <div class="reason-icon">🖼</div>
+          <div class="reason-text">
+            <div class="r-title">Foto fullscreen em vez de fundo escuro</div>
+            <div class="r-desc">O público 35–65 foi fidelizado por revistas de viagem com fotos de página inteira. Uma foto imersiva ativa o desejo de viajar imediatamente — fundo escuro com thumbnails pequenos não ativa nada.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">📐</div>
+          <div class="reason-text">
+            <div class="r-title">Tipografia enorme (80px+) em vez de tagline pequena</div>
+            <div class="r-desc">"PACOTES PELO MUNDO" em Cormorant Garamond Light ocupa o viewport inteiro. Nada para ler, tudo para sentir. A identidade da marca fica clara em menos de 1 segundo.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🎯</div>
+          <div class="reason-text">
+            <div class="r-title">Credencial "93 países" no topo, visível sem scroll</div>
+            <div class="r-desc">O diferencial do Rodrigo é ele ter visitado 93 países pessoalmente. Essa prova social é o argumento mais forte — ela aparece no hero, antes de qualquer pacote.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🧭</div>
+          <div class="reason-text">
+            <div class="r-title">Menu de 6 itens geográficos → 4 ações claras</div>
+            <div class="r-desc">O menu antigo exigia que o visitante já soubesse para qual continente queria ir. O novo organiza por intenção: Destinos, Grupos, Sobre, Contato. Qualquer pessoa entende em 1 segundo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-sep"></div>
+
+  <!-- 02: PACOTES / DESTINOS -->
+  <div class="comparison-block">
+    <div class="comparison-label">
+      <div class="num">02</div>
+      <div class="title-group">
+        <div class="eyebrow">Seção 02</div>
+        <h3>Pacotes & Destinos</h3>
+      </div>
+    </div>
+
+    <div class="screens">
+      <div class="screen-wrap">
+        <div class="screen-label old"><span class="dot"></span>Site antigo</div>
+        <div class="screen-content">
+          <div class="old-hero" style="min-height:240px;">
+            <div class="tagline" style="margin-bottom:16px;">PACOTES ASSINADOS BY RUAS</div>
+            <div class="cards" style="width:80%;max-width:340px;">
+              <div class="card">
+                <div class="card-photo card-c2"></div>
+                <div class="card-overlay">
+                  <div class="card-title">TURQUIA · 10 DIAS</div>
+                  <div class="card-sub">América do Sul | Ásia | África | Europa</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-photo card-c3"></div>
+                <div class="card-overlay">
+                  <div class="card-title">EGITO · 10 DIAS</div>
+                  <div class="card-sub">América do Sul | Ásia | África | Europa</div>
+                </div>
+              </div>
+            </div>
+            <div style="color:#4a5c7a;font-size:9px;margin-top:12px;text-align:center;">Thumbnails pequenos · sem informações de data ou vaga · sem CTA individual</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="screen-label new"><span class="dot"></span>Site novo</div>
+        <div class="screen-content">
+          <div class="new-pacotes">
+            <div class="eyebrow">Curadoria validada</div>
+            <h2>Pacotes Assinados<br>by Ruas</h2>
+            <div class="cards-grid">
+              <div class="dest-card">
+                <div class="photo grecia"></div>
+                <div class="info">
+                  <div class="title">Grécia</div>
+                  <div class="sub">Qualquer data · 11 dias</div>
+                  <div class="btn">Ver pacote •</div>
+                </div>
+              </div>
+              <div class="dest-card">
+                <div class="photo turquia"></div>
+                <div class="info">
+                  <div class="title">Turquia</div>
+                  <div class="sub">Qualquer data · 7 dias</div>
+                  <div class="btn">Ver pacote •</div>
+                </div>
+              </div>
+              <div class="dest-card">
+                <div class="photo japao"></div>
+                <div class="info">
+                  <div class="title">Japão</div>
+                  <div class="sub">08/10 · 10 dias · 20 vagas</div>
+                  <div class="btn">Ver o pacote completo •</div>
+                </div>
+              </div>
+              <div class="dest-card">
+                <div class="photo ushuaia"></div>
+                <div class="info">
+                  <div class="title">Ushuaia</div>
+                  <div class="sub">06/08 · últimas vagas</div>
+                  <div class="btn">Ver pacote •</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <h4>Fotos grandes: <em>vender o destino antes do pacote</em></h4>
+      <div class="reasons">
+        <div class="reason">
+          <div class="reason-icon">🏔</div>
+          <div class="reason-text">
+            <div class="r-title">Fotos como gatilho emocional</div>
+            <div class="r-desc">O público não compra dias de viagem — compra uma memória. A foto precisa ser grande o suficiente para fazer a pessoa imaginar-se lá. Thumbnails pequenos não vendem sonhos.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">📅</div>
+          <div class="reason-text">
+            <div class="r-title">Data + vagas visíveis = urgência real</div>
+            <div class="r-desc">"08/10 · 20 vagas" comunica escassez sem precisar de um popup irritante. O lead qualificado vê isso e entende que precisa agir — aumenta a taxa de clique no WhatsApp.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🎫</div>
+          <div class="reason-text">
+            <div class="r-title">CTA individual por pacote</div>
+            <div class="r-desc">Cada card tem "Ver pacote" com o estilo pill-button. O usuário sabe exatamente o que vai acontecer ao clicar — sem ambiguidade, sem medo de comprometer.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🗂</div>
+          <div class="reason-text">
+            <div class="r-title">Hierarquia clara: curadoria → destino → data</div>
+            <div class="r-desc">Primeiro o contexto ("Curadoria validada"), depois o produto ("Grécia"), depois os detalhes (data, duração). O cérebro do usuário mais velho processa melhor com essa hierarquia top-down.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-sep"></div>
+
+  <!-- 03: QUEM É RODRIGO / SOBRE -->
+  <div class="comparison-block">
+    <div class="comparison-label">
+      <div class="num">03</div>
+      <div class="title-group">
+        <div class="eyebrow">Seção 03</div>
+        <h3>Quem é Rodrigo — Autoridade & Credibilidade</h3>
+      </div>
+    </div>
+
+    <div class="screens">
+      <div class="screen-wrap">
+        <div class="screen-label old"><span class="dot"></span>Site antigo — página separada "Quem Somos"</div>
+        <div class="screen-content">
+          <div class="old-nav" style="margin-bottom:0;">
+            <div class="logo">RR VIAGENS</div>
+            <div class="links">
+              <a href="#">Página inicial</a>
+              <a class="active" href="#">Quem Somos</a>
+              <a href="#">África</a>
+              <a href="#">Mais ▾</a>
+            </div>
+          </div>
+          <div class="old-sobre">
+            <div class="old-sobre-inner">
+              <div class="photo"></div>
+              <div class="text-block">
+                <h3>Quem Somos</h3>
+                <p>Todos os produtos oferecidos em nosso site contam com a curadoria exclusiva de Rodrigo Ruas, viajante profissional com mais de 19 anos de experiência pelo mundo. Rodrigo já gravou seu renomado programa de viagens em 93 países, explorando culturas, paisagens e experiências únicas.<br><br>Desde 2019, ele compartilha essa paixão com seus seguidores por meio de grupos de viagem cuidadosamente planejados, proporcionando vivências inesquecíveis em diversos destinos ao redor do mundo...</p>
+              </div>
+            </div>
+          </div>
+          <div style="background:#162038;padding:8px 16px;text-align:center;">
+            <span style="color:#4a5c7a;font-size:9px;">← usuário precisa sair da página inicial para encontrar essa informação</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="screen-label new"><span class="dot"></span>Site novo — seção inline, sem sair da página</div>
+        <div class="screen-content">
+          <div class="new-sobre">
+            <div class="photo" style="background:linear-gradient(160deg,#c8b8a8,#a09080);justify-content:center;">
+              <div style="width:70px;height:90px;background:linear-gradient(180deg,#d4c0a8,#a88068);border-radius:50% 50% 35% 35%;"></div>
+            </div>
+            <div class="eyebrow">Quem é Rodrigo Ruas</div>
+            <h2>Já estive em 93 países. Sei o que vale cada hora, cada hotel, cada rota.</h2>
+            <p>Em 19 anos de estrada, Rodrigo conduziu mais de 1.500 viajantes pelo mundo. Não é agente de viagens — é um <em>especialista</em> que já foi em cada destino que vende.</p>
+          </div>
+          <div class="new-stats">
+            <div class="stat-item"><div class="big">93</div><div class="label">Países visitados</div></div>
+            <div class="stat-item"><div class="big">19+</div><div class="label">Anos de experiência</div></div>
+            <div class="stat-item"><div class="big">1.500+</div><div class="label">Viajantes levados</div></div>
+            <div class="stat-item"><div class="big">40+</div><div class="label">Destinos ativos</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <h4>Autoridade <em>inline</em> — sem atrito, sem página extra</h4>
+      <div class="reasons">
+        <div class="reason">
+          <div class="reason-icon">📜</div>
+          <div class="reason-text">
+            <div class="r-title">Manifesto em vez de sobre-nós corporativo</div>
+            <div class="r-desc">"Já estive em 93 países. Sei o que vale cada hora, cada hotel, cada rota." é uma frase que transmite expertise em 2 segundos. O texto do site antigo tem 3 parágrafos que dizem o mesmo — mas o usuário não lê.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">📊</div>
+          <div class="reason-text">
+            <div class="r-title">Números como prova visual (93 / 19+ / 1.500+ / 40+)</div>
+            <div class="r-desc">O usuário 35–65 confia em dados concretos. Quatro números grandes em uma barra escura são mais persuasivos do que qualquer parágrafo. Esse público viveu a era dos infomerciais — números vendem.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🔄</div>
+          <div class="reason-text">
+            <div class="r-title">Tudo em uma página — zero atrito de navegação</div>
+            <div class="r-desc">No site antigo, o usuário precisa clicar em "Quem Somos" para saber quem é o Rodrigo. Muitos não clicam. No novo, a credencial aparece durante o scroll natural — sem esforço do usuário.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">📷</div>
+          <div class="reason-text">
+            <div class="r-title">Foto do Rodrigo como âncora de confiança</div>
+            <div class="r-desc">O público mais velho compra de pessoas, não de marcas. Ver o rosto do Rodrigo no mesmo espaço onde estão os pacotes cria um elo de confiança que uma foto de grupo pequena em outra página não cria.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-sep"></div>
+
+  <!-- 04: PROCESSO + DEPOIMENTO -->
+  <div class="comparison-block">
+    <div class="comparison-label">
+      <div class="num">04</div>
+      <div class="title-group">
+        <div class="eyebrow">Seção 04</div>
+        <h3>Processo & Depoimento — seções que não existiam</h3>
+      </div>
+    </div>
+
+    <div class="screens">
+      <div class="screen-wrap">
+        <div class="screen-label old"><span class="dot"></span>Site antigo — ausente</div>
+        <div class="screen-content">
+          <div class="absent">
+            <div class="x">✕</div>
+            <div class="msg">Nenhuma seção explicando<br>como funciona o processo de compra.</div>
+          </div>
+          <div class="absent" style="border-top:1px solid rgba(255,255,255,.04);">
+            <div class="x">✕</div>
+            <div class="msg">Nenhum depoimento de cliente.<br>Zero prova social de terceiros.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="screen-label new"><span class="dot"></span>Site novo</div>
+        <div class="screen-content">
+          <div class="new-testimonial">
+            <div class="star">★</div>
+            <blockquote>"Eu nunca tinha viajado para fora do Brasil. Com o Rodrigo, fui para o Japão e voltei diferente."</blockquote>
+            <cite>— Maria C., São Paulo</cite>
+          </div>
+          <div class="new-process">
+            <div class="eyebrow">O processo</div>
+            <h2>É simples assim:</h2>
+            <div class="steps">
+              <div class="step">
+                <div class="num">01</div>
+                <div class="step-title">Escolha seu destino</div>
+                <div class="step-desc">Mais de 40 países com saídas programadas.</div>
+              </div>
+              <div class="step">
+                <div class="num">02</div>
+                <div class="step-title">Fale com nossa equipe</div>
+                <div class="step-desc">Atendimento direto. Pessoa real, sem robô.</div>
+              </div>
+              <div class="step">
+                <div class="num">03</div>
+                <div class="step-title">Apareça no aeroporto</div>
+                <div class="step-desc">Passagem, hotel, passeios. O resto é com a gente.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <h4>Remover <em>objeções antes</em> que elas apareçam</h4>
+      <div class="reasons">
+        <div class="reason">
+          <div class="reason-icon">💬</div>
+          <div class="reason-text">
+            <div class="r-title">Depoimento real remove o medo do desconhecido</div>
+            <div class="r-desc">"Nunca tinha viajado para fora do Brasil" é exatamente o perfil do lead. Quando ele lê isso e se identifica, a barreira emocional cai. Social proof de pares é mais poderoso do que qualquer argumento de vendas.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">3️⃣</div>
+          <div class="reason-text">
+            <div class="r-title">"É simples assim" — remove a objeção de complexidade</div>
+            <div class="r-desc">A maior objeção do público 35–65 é "viajar internacional é complicado". O processo em 3 passos responde isso antes que eles perguntem. O passo 03 — "Apareça no aeroporto" — é o melhor copy da página.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🤖</div>
+          <div class="reason-text">
+            <div class="r-title">"Pessoa real, sem robô" — diferenciação direta</div>
+            <div class="r-desc">Esse público odiou a experiência de ligar para callcenter. "Atendimento direto. Pessoa real, sem robô" é um argumento que ressoa com quem passou anos ouvindo música de espera em URA.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">📖</div>
+          <div class="reason-text">
+            <div class="r-title">Numeração clara — linguagem de revista</div>
+            <div class="r-desc">Números grandes (01, 02, 03) com tipografia Cormorant remetem às matérias "3 passos para…" que esse público lia em revistas. A familiaridade do formato reduz a resistência cognitiva.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-sep"></div>
+
+  <!-- 05: CTA + CONTATO + FOOTER -->
+  <div class="comparison-block">
+    <div class="comparison-label">
+      <div class="num">05</div>
+      <div class="title-group">
+        <div class="eyebrow">Seção 05</div>
+        <h3>CTA, Contato & Footer</h3>
+      </div>
+    </div>
+
+    <div class="screens">
+      <div class="screen-wrap">
+        <div class="screen-label old"><span class="dot"></span>Site antigo</div>
+        <div class="screen-content">
+          <div class="old-footer">
+            <div class="logo">RR VIAGENS</div>
+            <div class="phone">(11) 96640-1489</div>
+            <div class="copy">© 2026 RODRIGO RUAS</div>
+          </div>
+          <div style="background:#162038;padding:8px 16px;text-align:center;">
+            <span style="color:#4a5c7a;font-size:9px;">Único contato visível: número de telefone no footer. Botão flutuante de WhatsApp (canto inferior direito).</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-wrap">
+        <div class="screen-label new"><span class="dot"></span>Site novo</div>
+        <div class="screen-content">
+          <div class="new-cta">
+            <div class="eyebrow">Reserve agora</div>
+            <h2>Sua próxima viagem começa<br>com uma mensagem.</h2>
+            <div class="cta-btn">Falar no WhatsApp agora •</div>
+            <div class="hint">🕐 Resposta em até 1 hora · (11) 96640-1489</div>
+          </div>
+          <div class="new-footer">
+            <div>
+              <div class="logo">RR VIAGENS</div>
+              <div class="tagline">Pacotes pelo Mundo</div>
+            </div>
+            <div>
+              <div class="col-title">Links</div>
+              <div class="col-links">
+                <a href="#">Pacotes</a>
+                <a href="#">Destinos</a>
+                <a href="#">Sobre</a>
+                <a href="#">Contato</a>
+              </div>
+            </div>
+            <div>
+              <div class="col-title">Contato</div>
+              <div class="col-links">
+                <a href="#">@rodrigoruas</a>
+                <a href="#">(11) 96640-1489</a>
+              </div>
+            </div>
+            <div class="bottombar">
+              <span>© 2026 RR Viagens — CNPJ 52.437.341/0001-22</span>
+              <span>Feito com amor no Brasil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">
+      <h4>O CTA precisa <em>merecer o clique</em></h4>
+      <div class="reasons">
+        <div class="reason">
+          <div class="reason-icon">💡</div>
+          <div class="reason-text">
+            <div class="r-title">"Começa com uma mensagem" — baixo comprometimento</div>
+            <div class="r-desc">O público mais velho hesita em ligar para números desconhecidos. "Uma mensagem" parece menos invasivo do que "ligue agora". O micro-copy do CTA reduz a ansiedade de dar o primeiro passo.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">⏱</div>
+          <div class="reason-text">
+            <div class="r-title">"Resposta em até 1 hora" — expectativa gerenciada</div>
+            <div class="r-desc">O lead não fica no vácuo. Saber que vai receber resposta em até 1 hora transforma o WhatsApp de "será que me respondem?" para uma promessa de serviço. Reduz abandono pós-clique.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🏷</div>
+          <div class="reason-text">
+            <div class="r-title">CNPJ no footer — sinal de seriedade</div>
+            <div class="r-desc">O público 35–65 viveu a era das agências físicas. Ver CNPJ no rodapé é o equivalente digital do "endereço na janela". Transmite que é uma empresa real, não um perfil de Instagram.</div>
+          </div>
+        </div>
+        <div class="reason">
+          <div class="reason-icon">🗺</div>
+          <div class="reason-text">
+            <div class="r-title">Footer estruturado — mapa do site para quem pulou seções</div>
+            <div class="r-desc">Usuário mais velho frequentemente scanna até o final da página antes de agir. O footer com links organizados serve como índice — qualquer informação que perdeu está acessível ali.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<!-- RESULTADOS ESPERADOS -->
+<div class="results-section">
+  <div class="wrapper">
+    <h2>O que essa mudança deve gerar</h2>
+    <p class="sub">Impactos diretos nas métricas que importam</p>
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="m-num">↑ Tempo</div>
+        <h4>Mais tempo na página</h4>
+        <p>Fotos grandes e rolagem fluida mantêm o usuário engajado. Um hero que não responde à expectativa visual leva ao bounce imediato.</p>
+      </div>
+      <div class="metric-card">
+        <div class="m-num">↑ Qualidade</div>
+        <h4>Lead mais qualificado no WhatsApp</h4>
+        <p>Quem chega ao CTA já viu as credenciais, o processo e os preços. Não precisa ser educado durante o atendimento — chega pronto para decidir.</p>
+      </div>
+      <div class="metric-card">
+        <div class="m-num">↓ Atrito</div>
+        <h4>Menos cliques para entender o produto</h4>
+        <p>Toda informação que importa está em scroll único. Nenhuma página separada, nenhum menu de continente, nenhuma busca — só scroll e decidir.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER DA APRESENTAÇÃO -->
+<div class="pres-footer">
+  <div class="brand">RR Viagens</div>
+  <div class="copy">Análise estratégica de design · Junho 2026</div>
+</div>
+
+</body>
+</html>

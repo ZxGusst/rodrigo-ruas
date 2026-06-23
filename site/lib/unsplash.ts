@@ -44,7 +44,7 @@ export const UNSPLASH: Record<string, string> = {
 
   /* ── Pessoas / Hero ─────────────────────────────────── */
   hero:           `${BASE}/photo-1476514525535-07fb3b4ae5f1?w=1920&q=85&fm=webp&fit=crop`,
-  rodrigo:        `${BASE}/photo-1507003211169-0a1dd7228f2d?w=900&q=80&fm=webp&fit=crop`,
+  rodrigo:        `/imgs/rodrigo-ruas.jpg`,
 }
 
 /* ── Aliases para slugs compostos ───────────────────────── */
