@@ -160,9 +160,9 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             <LineReveal as="h2" className="t-h2 text-foreground mb-16">Dia a dia</LineReveal>
             <div className="flex flex-col gap-20">
               {pacote.itinerario.map((dia, i) => {
-                /* fallback: usa foto da galeria ciclando pelo índice */
+                /* fallback: usa a foto da galeria no mesmo índice (sem wrap circular) */
                 const galeria = pacote.galeria ?? []
-                const fotoFallback = galeria.length > 0 ? galeria[i % galeria.length] : null
+                const fotoFallback = galeria[i] ?? null
                 const foto = dia.imagem ?? fotoFallback
 
                 return (
