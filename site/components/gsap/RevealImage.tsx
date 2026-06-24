@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 gsap.registerPlugin(ScrollTrigger)
 
-interface RevealImageProps {
+interface RevealImageProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   className?: string
   delay?: number
@@ -22,6 +22,7 @@ export function RevealImage({
   className = "",
   delay = 0,
   direction = "up",
+  ...props
 }: RevealImageProps) {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -34,27 +35,25 @@ export function RevealImage({
       right: "inset(0% 0% 0% 100%)",
     }
 
-    const tween = gsap.fromTo(
-      ref.current,
-      { clipPath: from[direction] },
-      {
-        clipPath: "inset(0% 0% 0% 0%)",
-        duration: 1.1,
-        delay,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: ref.current,
-          start: "top 88%",
-          toggleActions: "play none none none",
-        },
-      }
-    )
+    gsap.set(ref.current, { clipPath: from[direction] })
+
+    const tween = gsap.to(ref.current, {
+      clipPath: "inset(0% 0% 0% 0%)",
+      duration: 1.1,
+      delay,
+      ease: "power4.out",
+      scrollTrigger: {
+        trigger: ref.current,
+        start: "top 88%",
+        once: true,
+      },
+    })
 
     return () => { tween.kill(); tween.scrollTrigger?.kill() }
   }, [delay, direction])
 
   return (
-    <div ref={ref} className={className} style={{ clipPath: "inset(100% 0% 0% 0%)" }}>
+    <div ref={ref} className={className} {...props}>
       {children}
     </div>
   )

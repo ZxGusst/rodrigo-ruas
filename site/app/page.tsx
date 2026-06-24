@@ -121,7 +121,7 @@ export default async function Home() {
     { _id:"b5", titulo:"China",                  slug:"china",     badge:null,       heroImage:null, periodo:"Out 2026", dias:18, partida:"17/10" },
   ]
 
-  const destaqueGrupos    = MOCK_GRUPOS[0]    ?? null
+  const destaqueGrupos    = MOCK_GRUPOS.find(p => p.prioridade === "destaque") ?? MOCK_GRUPOS[0] ?? null
   const destaqueAssinados = assinados[0] ?? null
 
   return (
