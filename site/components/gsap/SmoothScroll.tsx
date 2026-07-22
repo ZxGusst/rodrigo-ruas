@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { usePathname } from "next/navigation"
 import Lenis from "lenis"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -9,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -29,8 +31,37 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     return () => {
       gsap.ticker.remove(tick)
       lenis.destroy()
+      lenisRef.current = null
     }
   }, [])
+
+  /**
+   * O Lenis é criado uma única vez e persiste entre navegações client-side.
+   * Ao trocar de rota, ele mantém o `limit` (altura rolável) da página anterior
+   * até o ResizeObserver do autoResize disparar — o que leva ~1s. Nessa janela,
+   * se a nova página é mais alta, a roda do mouse trava antes do fim real
+   * (só a scrollbar nativa alcança o final). Recalculamos as dimensões
+   * explicitamente a cada troca de rota para fechar essa janela.
+   */
+  useEffect(() => {
+    const lenis = lenisRef.current
+    if (!lenis) return
+
+    let raf = 0
+    const resync = () => {
+      lenis.resize()
+      ScrollTrigger.refresh()
+    }
+    // após o commit do novo conteúdo + um frame de layout
+    raf = requestAnimationFrame(resync)
+    // segunda passada para conteúdo que assenta um pouco depois (curtain, imagens)
+    const t = setTimeout(resync, 350)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(t)
+    }
+  }, [pathname])
 
   return <>{children}</>
 }
