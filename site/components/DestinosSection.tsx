@@ -17,8 +17,16 @@ interface Pacote {
   periodo?: string
   dias?: number
   partida?: string
-  preco?: number
+  moeda?: string
+  entrada?: number
+  numParcelas?: number
+  valorParcela?: number
   descricaoCurta?: string
+}
+
+/** total por pessoa (entrada + parcelas). Tudo em US$ hoje. */
+function totalPacote(p: { entrada?: number; numParcelas?: number; valorParcela?: number }) {
+  return (p.entrada ?? 0) + (p.numParcelas ?? 0) * (p.valorParcela ?? 0)
 }
 
 function imageUrl(p: Pacote) {
@@ -82,7 +90,7 @@ export function DestinosSection({
   const [precoMax, setPrecoMax] = useState(0)
 
   const filtrar = (list: Pacote[]) =>
-    precoMax === 0 ? list : list.filter(p => !p.preco || p.preco <= precoMax)
+    precoMax === 0 ? list : list.filter(p => { const t = totalPacote(p); return !t || t <= precoMax })
 
   const gruposFiltrados    = filtrar(grupos)
   const assinadosFiltrados = filtrar(assinados)

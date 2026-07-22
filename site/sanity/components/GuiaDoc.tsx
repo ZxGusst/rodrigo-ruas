@@ -63,7 +63,10 @@ export function GuiaDoc() {
         <Field name="Descrição curta" desc="Frase de 1-2 linhas que resume o roteiro. Aparece na lista quando o destino está selecionado." />
         <Field name="Descrição longa" desc="Texto completo da página do pacote (suporta formatação)." />
         <Field name="Continentes"     desc="Usado para o filtro por região na lista. Selecione um ou mais." />
-        <Field name="Preço (R$)"      desc="Valor a partir de. Usado no filtro de preço máximo." />
+        <Field name="Investimento"    desc="Moeda (US$ padrão), Entrada, Nº de parcelas e Valor da parcela. Ex: US$ 2.300 (Entrada) + 9x US$ 445. O total por pessoa (entrada + parcelas) é usado no filtro de preço máximo." />
+        <Field name="Rota"            desc="Aeroporto de partida e de destino (selecione da lista) + Data de ida e Data de volta (calendário). A duração em dias é calculada automaticamente pelas datas." />
+        <Field name="Seguro / Termos" desc="Seguro viagem (valor riscado + status 'Incluso'), política de cancelamento e taxa de reagendamento aparecem no ticket de investimento." />
+        <Field name="Tagline"         desc="Frase no topo do ticket. Padrão: 'Eternize esse momento da melhor maneira'." />
         <Field name="Prioridade"      desc="Controla a visibilidade na homepage: Destaque (card grande no topo), Carrossel (rolagem lateral), Oculto (some da homepage mas continua na lista de destinos)." />
         <Field name="Ordem"           desc="Número de ordenação. Menor número aparece primeiro na lista." />
         <Note>

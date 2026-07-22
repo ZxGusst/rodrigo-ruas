@@ -21,7 +21,9 @@ const QUERY = groq`
     partida,
     descricaoCurta,
     continentes,
-    preco,
+    entrada,
+    numParcelas,
+    valorParcela,
   }
 `
 
@@ -36,9 +38,12 @@ export default async function PacotesSelecionPage({
   const { continente, precoMax, tipo } = await searchParams
   const maxPreco = Number(precoMax ?? 0)
 
+  const totalPacote = (p: { entrada?: number; numParcelas?: number; valorParcela?: number }) =>
+    (p.entrada ?? 0) + (p.numParcelas ?? 0) * (p.valorParcela ?? 0)
+
   const filtrados = pacotes
     .filter(p => !continente || p.continentes?.includes(continente))
-    .filter(p => !maxPreco   || !p.preco || p.preco <= maxPreco)
+    .filter(p => { if (!maxPreco) return true; const t = totalPacote(p); return !t || t <= maxPreco })
     .filter(p => !tipo       || p.tipo === tipo)
 
   return (

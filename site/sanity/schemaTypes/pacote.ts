@@ -1,4 +1,5 @@
 import { defineField, defineType, defineArrayMember } from "sanity"
+import { AIRPORT_OPTIONS } from "../../lib/airports"
 
 export const pacote = defineType({
   name:  "pacote",
@@ -83,29 +84,72 @@ export const pacote = defineType({
     defineField({ name: "dias",     title: "Duração (dias)",             type: "number" }),
     defineField({ name: "partida",  title: "Data de partida (ex: 04/10)",type: "string" }),
     defineField({ name: "vagas",    title: "Número de vagas",            type: "number" }),
+    /* ── Investimento (entrada + parcelas) ────────────── */
     defineField({
-      name: "preco",
-      title: "Preço COM aéreo (R$/pessoa)",
-      type: "number",
-      description: "Pacote completo incluindo passagem aérea.",
+      name: "aereoIncluso",
+      title: "Aéreo incluso?",
+      type: "boolean",
+      description: "Deixe DESLIGADO para roteiros terrestres — o ticket mostra 'aéreo por conta do viajante'.",
+      initialValue: false,
     }),
     defineField({
-      name: "precoSemAero",
-      title: "Preço SEM aéreo (R$/pessoa)",
-      type: "number",
-      description: "Pacote terrestre sem passagem aérea.",
-    }),
-    defineField({
-      name: "taxaServico",
-      title: "Taxa de serviço (R$)",
-      type: "number",
-      description: "Taxas incluídas no preço. Aparece no breakdown.",
-    }),
-    defineField({
-      name: "cidadePartida",
-      title: "Cidade de partida",
+      name: "moeda",
+      title: "Moeda",
       type: "string",
-      initialValue: "São Paulo",
+      options: {
+        list: [
+          { title: "US$ (Dólar)", value: "US$" },
+          { title: "R$ (Real)",   value: "R$"  },
+        ],
+        layout: "radio",
+      },
+      initialValue: "US$",
+    }),
+    defineField({
+      name: "entrada",
+      title: "Entrada (valor por pessoa)",
+      type: "number",
+      description: "Valor da entrada. Ex: 2300 → US$ 2.300 (Entrada).",
+    }),
+    defineField({
+      name: "numParcelas",
+      title: "Número de parcelas",
+      type: "number",
+      description: "Ex: 9 → 9x.",
+    }),
+    defineField({
+      name: "valorParcela",
+      title: "Valor de cada parcela",
+      type: "number",
+      description: "Ex: 445 → 9x US$ 445.",
+    }),
+
+    /* ── Rota (aeroportos + datas) ─────────────────────── */
+    defineField({
+      name: "aeroportoPartida",
+      title: "Aeroporto de partida",
+      type: "string",
+      options: { list: AIRPORT_OPTIONS },
+      initialValue: "GRU",
+    }),
+    defineField({
+      name: "aeroportoDestino",
+      title: "Aeroporto de destino",
+      type: "string",
+      options: { list: AIRPORT_OPTIONS },
+    }),
+    defineField({
+      name: "dataIda",
+      title: "Data de ida",
+      type: "date",
+      options: { dateFormat: "DD/MM/YYYY" },
+      description: "Abre um calendário. A duração em dias é calculada automaticamente.",
+    }),
+    defineField({
+      name: "dataVolta",
+      title: "Data de volta",
+      type: "date",
+      options: { dateFormat: "DD/MM/YYYY" },
     }),
     defineField({
       name: "politicaCancelamento",
@@ -127,6 +171,40 @@ export const pacote = defineType({
       type: "string",
       description: 'Ex: "R$ 500,00" ou "Gratuito até 60 dias antes"',
       initialValue: "R$ 500,00",
+    }),
+    defineField({
+      name: "seguroValor",
+      title: "Seguro viagem — valor (riscado)",
+      type: "string",
+      description: 'Aparece riscado ao lado de "Incluso". Ex: "R$ 129".',
+      initialValue: "R$ 129",
+    }),
+    defineField({
+      name: "seguroStatus",
+      title: "Seguro viagem — status",
+      type: "string",
+      description: 'Texto verde ao lado do valor. Ex: "Incluso".',
+      initialValue: "Incluso",
+    }),
+
+    /* ── Personalização do ticket de pricing ──────────── */
+    defineField({
+      name: "tagline",
+      title: "Tagline do ticket (badge)",
+      type: "string",
+      description: 'Frase no topo do ticket. Padrão: "Eternize esse momento da melhor maneira".',
+    }),
+    defineField({
+      name: "rodapeAtendimento",
+      title: "Ticket — texto de atendimento",
+      type: "string",
+      initialValue: "Fale direto com nosso atendimento",
+    }),
+    defineField({
+      name: "rodapeSeguranca",
+      title: "Ticket — texto de segurança",
+      type: "string",
+      initialValue: "Compra segura",
     }),
     defineField({
       name: "continentes", title: "Continentes / Regiões",

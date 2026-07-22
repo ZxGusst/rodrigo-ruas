@@ -22,8 +22,12 @@ interface Dia { numero: number; titulo: string; texto?: any[]; imagem?: any }
 interface PacoteData {
   _id: string; titulo: string; slug: string; badge?: string; heroImage?: any
   tipo?: string; periodo?: string; dias?: number; partida?: string; vagas?: number
-  preco?: number; precoSemAero?: number; taxaServico?: number; cidadePartida?: string
+  aereoIncluso?: boolean
+  moeda?: string; entrada?: number; numParcelas?: number; valorParcela?: number
+  aeroportoPartida?: string; aeroportoDestino?: string; dataIda?: string; dataVolta?: string
   politicaCancelamento?: string; politicaReagendamento?: string
+  seguroValor?: string; seguroStatus?: string; tagline?: string
+  rodapeAtendimento?: string; rodapeSeguranca?: string
   intro?: any[]; pullQuote?: string; itinerario?: Dia[]
   galeria?: any[]; incluso?: string[]; naoIncluso?: string[]; metaDescricao?: string
 }
@@ -60,6 +64,9 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
   if (!pacote) notFound()
 
   const WA = "https://wa.me/5511966401489"
+
+  /* remove a linha de passagem aérea do "incluso" em todo o site (não trabalham mais com aéreo) */
+  const inclusoSemAerea = (pacote.incluso ?? []).filter(i => !/passagem|a[ée]re/i.test(i))
 
   return (
     <main data-page-content className="bg-background text-foreground overflow-x-clip">
@@ -166,7 +173,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                 const foto = dia.imagem ?? fotoFallback
 
                 return (
-                <div key={dia.numero} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                   <ScrollReveal className={i % 2 === 1 ? "lg:order-2" : ""}>
                     <p className="t-label mb-3">Dia {dia.numero}</p>
                     <h3 className="t-h3 text-foreground mb-5">{dia.titulo}</h3>
@@ -216,7 +223,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
       )}
 
       {/* ══ INCLUSO / NÃO INCLUSO — dois painéis ══════════ */}
-      {(pacote.incluso?.length || pacote.naoIncluso?.length) ? (
+      {(inclusoSemAerea.length || pacote.naoIncluso?.length) ? (
         <section className="border-t-2 border-foreground">
           <div className="grid grid-cols-1 lg:grid-cols-2">
 
@@ -230,7 +237,7 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
                 </h3>
               </ScrollReveal>
               <div className="flex flex-col divide-y divide-primary-foreground/10">
-                {(pacote.incluso ?? []).map((item, i) => (
+                {inclusoSemAerea.map((item, i) => (
                   <ScrollReveal key={i} delay={i * 0.04} className="flex items-center gap-5 py-5">
                     <span className="shrink-0 w-8 h-8 rounded-full bg-primary-foreground/15 flex items-center justify-center">
                       <Check size={18} weight="bold" className="text-primary-foreground" />
@@ -269,18 +276,18 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
       {/* ══ CTA FINAL + TICKET ═════════════════════════════ */}
       <section className="relative bg-foreground text-primary-foreground py-24 overflow-hidden" data-cursor-theme="dark">
 
-        {/* bg image nítida + overlay preto */}
+        {/* bg image do destino — deixa a foto respirar para o ticket navy destacar */}
         {pacote.heroImage && (
           <>
             <div className="absolute inset-0 z-0">
               <img
                 src={urlFor(pacote.heroImage).width(1920).fit("crop").url()}
                 alt=""
-                className="w-full h-full object-cover opacity-40"
+                className="w-full h-full object-cover opacity-60"
                 aria-hidden
               />
             </div>
-            <div className="absolute inset-0 z-[1] bg-black/60" />
+            <div className="absolute inset-0 z-[1] bg-black/45" />
           </>
         )}
         <div className="wrap relative z-[2]">
@@ -290,35 +297,38 @@ export default async function PacotePage({ params }: { params: Promise<{ slug: s
             <ScrollReveal>
               <p className="t-label !text-primary-foreground/80 mb-4">Pronto para ir?</p>
             </ScrollReveal>
-            <h2 className="t-h1 text-primary-foreground mb-6 leading-none">
+            <h2 className="t-h1 text-primary-foreground leading-none">
               Garanta sua vaga em {pacote.titulo}
               {pacote.periodo && <><br />— {pacote.periodo}.</>}
               {!pacote.periodo && "."}
             </h2>
-            <ScrollReveal delay={0.1}>
-              <p className="t-body-lg !text-primary-foreground/80 max-w-xl mx-auto">
-                {pacote.vagas ? `Grupo de ${pacote.vagas} pessoas.` : ""} Atendimento direto com Rodrigo. Vagas limitadas.
-              </p>
-            </ScrollReveal>
           </div>
 
           {/* Ticket centrado abaixo */}
-          <ScrollReveal delay={0.15} className="w-full max-w-[1000px] mx-auto">
+          <ScrollReveal delay={0.15} className="w-full max-w-[1180px] mx-auto">
             <PricingTicket
               titulo={pacote.titulo}
               tipo={pacote.tipo}
+              tagline={pacote.tagline}
               destino={pacote.titulo}
-              periodo={pacote.periodo}
-              cidadePartida={pacote.cidadePartida ?? "São Paulo"}
-              partida={pacote.partida}
+              codPartida={pacote.aeroportoPartida}
+              codDestino={pacote.aeroportoDestino}
+              aereoIncluso={pacote.aereoIncluso}
+              dataIda={pacote.dataIda}
+              dataVolta={pacote.dataVolta}
               dias={pacote.dias}
               vagas={pacote.vagas}
-              preco={pacote.preco}
-              precoSemAero={pacote.precoSemAero}
-              taxaServico={pacote.taxaServico}
+              moeda={pacote.moeda}
+              entrada={pacote.entrada}
+              numParcelas={pacote.numParcelas}
+              valorParcela={pacote.valorParcela}
+              seguroValor={pacote.seguroValor}
+              seguroStatus={pacote.seguroStatus}
               politicaCancelamento={pacote.politicaCancelamento}
               politicaReagendamento={pacote.politicaReagendamento}
-              incluso={pacote.incluso ?? []}
+              rodapeAtendimento={pacote.rodapeAtendimento}
+              rodapeSeguranca={pacote.rodapeSeguranca}
+              incluso={inclusoSemAerea}
             />
           </ScrollReveal>
 
